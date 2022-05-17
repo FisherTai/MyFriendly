@@ -65,6 +65,34 @@ module.exports.login = async (
     next(err);
   }
 };
+
+module.exports.setAvatar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const avatarImage = req.body.image;
+    const userData = await User.findByIdAndUpdate(
+      userId,
+      {
+        USER_AVATAR: avatarImage,
+      },
+      { new: true }
+    );
+    return resJson(
+      res,
+      new ResultObject(ResultCode.SUCCESS, {
+        isSet: userData.isAvatarImageSet(),
+        image: userData.USER_AVATAR,
+      })
+    );
+  } catch (ex) {
+    next(ex);
+  }
+};
+
 const resJson = (res: Response, result: ResultObject) => {
   console.log(result);
   return res.send(result);
