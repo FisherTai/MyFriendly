@@ -40,7 +40,7 @@ const Register = (props: Props) => {
         if (data.code !== 200) {
           toast.error(data.message, toastOptions);
         } else {
-          toast.success("創建成功.", toastOptions);
+          toast.success("註冊成功，即將跳轉", toastOptions);
           localStorage.setItem(
             // process.env.REACT_APP_LOCALHOST_KEY, //TODO:
             "friendly-user",
@@ -68,27 +68,27 @@ const Register = (props: Props) => {
     const { password, confirmPassword, username, email, sex } = values;
     if (password !== confirmPassword) {
       toast.error(
-        "Password and confirm password should be same.",
+        "確認密碼不符合",
         toastOptions
       );
       return false;
     } else if (username.length < 3) {
       toast.error(
-        "Username should be greater than 3 characters.",
+        "用戶名至少需要3個字元",
         toastOptions
       );
       return false;
     } else if (password.length < 8) {
       toast.error(
-        "Password should be equal or greater than 8 characters.",
+        "密碼至少需要8個字元",
         toastOptions
       );
       return false;
     } else if (email === "") {
-      toast.error("Email is required.", toastOptions);
+      toast.error("Email未填寫", toastOptions);
       return false;
     } else if (sex === "") {
-      toast.error("sex is required.", toastOptions);
+      toast.error("性別未勾選", toastOptions);
       return false;
     }
     return true;
@@ -109,7 +109,7 @@ const Register = (props: Props) => {
 
           <input
             type="text"
-            placeholder="Username"
+            placeholder="用戶名"
             name="username"
             onChange={(event) => handleChange(event)}
           />
@@ -123,14 +123,14 @@ const Register = (props: Props) => {
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder="密碼"
             name="password"
             onChange={(event) => handleChange(event)}
           />
 
           <input
             type="password"
-            placeholder="Confirm Password"
+            placeholder="確認密碼"
             name="confirmPassword"
             onChange={(event) => handleChange(event)}
           />
@@ -143,7 +143,7 @@ const Register = (props: Props) => {
               value="1"
               onChange={(event) => handleChange(event)}
             />
-            <label htmlFor="male">Male</label>
+            <label htmlFor="male">男</label>
             <input
               type="radio"
               id="female"
@@ -151,12 +151,12 @@ const Register = (props: Props) => {
               value="2"
               onChange={(event) => handleChange(event)}
             />
-            <label htmlFor="female">Female</label>
+            <label htmlFor="female">女</label>
           </div>
 
-          <button type="submit">Sign Up</button>
+          <button type="submit">註冊</button>
           <span>
-            Already have an account ? <Link to="/login">Login.</Link>
+            已經擁有帳戶 ? <Link to="/login">登入.</Link>
           </span>
         </form>
       </FormContainer>

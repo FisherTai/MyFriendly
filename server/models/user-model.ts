@@ -67,7 +67,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
 });
 
 userSchema.method("isAvatarImageSet", function isAvatarImageSet() {
-  return this.USER_AVATAR === "";
+  return this.USER_AVATAR !== "";
 });
 
 userSchema.method("isMale", function isMale() {

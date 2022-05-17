@@ -70,10 +70,10 @@ const Login = (props: Props) => {
   const handleValidation = (): boolean => {
     const { password, email } = values;
     if (password === "") {
-      toast.error("Email and Password is fail", toastOptions);
+      toast.error("錯誤的Email或密碼", toastOptions);
       return false;
     } else if (email === "") {
-      toast.error("Email and Password is fail", toastOptions);
+      toast.error("錯誤的Email或密碼", toastOptions);
       return false;
     }
     return true;
@@ -101,15 +101,15 @@ const Login = (props: Props) => {
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder="密碼"
             name="password"
             min="3"
             onChange={(event) => handleChange(event)}
           />
 
-          <button type="submit">Login</button>
+          <button type="submit">登入</button>
           <span>
-            Don't have an account ? <Link to="/register">Register.</Link>
+            還沒擁有帳戶 ? <Link to="/register">註冊.</Link>
           </span>
         </form>
       </FormContainer>
