@@ -13,7 +13,7 @@ module.exports.register = async (
     const { username, email, password, sex } = req.body;
     const emailCheck = await User.findOne({ USER_EMAIL: email });
     if (emailCheck) {
-      return resJson(res,new ResultObject(ResultCode.USER_EXIST));
+      return resJson(res, new ResultObject(ResultCode.USER_EXIST));
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     let user = await User.create({
@@ -29,7 +29,7 @@ module.exports.register = async (
       USER_POINT: undefined,
       USER_REPORT: undefined,
     };
-    return resJson(res,new ResultObject(ResultCode.SUCCESS, resUser));
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, resUser));
   } catch (err: any) {
     console.log(err.response);
     next(err);
@@ -46,11 +46,11 @@ module.exports.login = async (
     const { email, password } = req.body;
     const findUser = await User.findOne({ USER_EMAIL: email });
     if (!findUser) {
-      return resJson(res,new ResultObject(ResultCode.WRONG_USER_OR_PASSWORD));
+      return resJson(res, new ResultObject(ResultCode.WRONG_USER_OR_PASSWORD));
     }
     const isPasswordValid = await bcrypt.compare(password, findUser.USER_PW);
     if (!isPasswordValid) {
-      return resJson(res,new ResultObject(ResultCode.WRONG_USER_OR_PASSWORD));
+      return resJson(res, new ResultObject(ResultCode.WRONG_USER_OR_PASSWORD));
     }
     // 無法直接對mongoose的物件進行操作，因次創建一個新物件
     const resUser = {
@@ -59,7 +59,7 @@ module.exports.login = async (
       USER_POINT: undefined,
       USER_REPORT: undefined,
     };
-    return resJson(res,new ResultObject(ResultCode.SUCCESS, resUser));
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, resUser));
   } catch (err: any) {
     console.log(err.response);
     next(err);
@@ -87,6 +87,28 @@ module.exports.setAvatar = async (
         isSet: userData.isAvatarImageSet(),
         image: userData.USER_AVATAR,
       })
+    );
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.params.id } }).select([
+      "USER_EMAIL",
+      "USER_NAME",
+      "USER_SEX",
+      "USER_AVATAR",
+      "_id"
+    ]);
+    return resJson(
+      res,
+      new ResultObject(ResultCode.SUCCESS, users)
     );
   } catch (ex) {
     next(ex);
