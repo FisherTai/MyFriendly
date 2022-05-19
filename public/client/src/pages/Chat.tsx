@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { getAllUsersRoute } from "../utils/api-routes";
+import { getAllUsersRoute, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
@@ -51,7 +51,7 @@ const Chat = (props: Props) => {
     <>
       <Container>
         <div className="container">
-
+          <Contacts contacts={contacts} changeChat={ setCurrentChat } />
         </div>
       </Container>
     </>
