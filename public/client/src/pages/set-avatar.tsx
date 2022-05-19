@@ -41,7 +41,7 @@ const SetAvatar = (props: Props) => {
       
       if (data.data.isSet) {
         user.isAvatarImageSet = true;
-        user.avatarImage = data.image;
+        user.USER_AVATAR = data.data.image;
         localStorage.setItem(
           "friendly-user", // TODO:
           JSON.stringify(user)

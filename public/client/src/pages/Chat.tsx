@@ -6,23 +6,16 @@ import { getAllUsersRoute } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
+import { UserType } from "../config/types";
 
 type Props = {};
-
-type User = {
-  _id: string;
-  USER_NAME: string;
-  USER_EMAIL: string;
-  USER_SEX: string;
-  USER_AVATAR: string;
-};
 
 const Chat = (props: Props) => {
   const navigate = useNavigate();
   const socket = useRef();
-  const [contacts, setContacts] = useState([]);
-  const [currentChat, setCurrentChat] = useState<undefined>(undefined);
-  const [currentUser, setCurrentUser] = useState<undefined | User>(undefined);
+  const [contacts, setContacts] = useState<UserType[]>([]);
+  const [currentChat, setCurrentChat] = useState<undefined | UserType>(undefined);
+  const [currentUser, setCurrentUser] = useState<undefined | UserType>(undefined);
 
   useEffect(() => {
     async function fetchData() {
