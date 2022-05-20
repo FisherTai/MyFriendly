@@ -52,6 +52,11 @@ const Chat = (props: Props) => {
       <Container>
         <div className="container">
           <Contacts contacts={contacts} changeChat={ setCurrentChat } />
+          {currentChat === undefined ? (
+            <Welcome />
+          ) : (
+            <ChatContainer currentChat={currentChat}  />
+          )}
         </div>
       </Container>
     </>

@@ -1,11 +1,46 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { UserType } from "../config/types";
+import styled from "styled-components";
+import WelcomePic from "../assets/welcome.gif";
 
-type Props = {}
+type Props = {};
 
-const welcome = (props: Props) => {
+const Welcome = (props: Props) => {
+  const [userName, setUserName] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchData() {
+      let username = await JSON.parse(
+        localStorage.getItem("friendly-user")! //TODO: 
+      ).USER_NAME;
+      setUserName(username ? username : "");
+    }
+    fetchData();
+  }, []);
+
   return (
-    <div>welcome</div>
-  )
-}
+    <Container>
+      <img src={WelcomePic} alt="" />
+      <h1>
+        歡迎, <span>{userName}!</span>
+      </h1>
+      <h3>請選擇聊天對象</h3>
+    </Container>
+  );
+};
 
-export default welcome
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  flex-direction: column;
+  img {
+    height: 20rem;
+  }
+  span {
+    color: #4e0eff;
+  }
+`;
+
+export default Welcome;
