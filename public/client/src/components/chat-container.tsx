@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import Logout from "./logout";
 import ChatInput from "./chat-input";
-import { UserType } from "../config/types";
+import { IUser } from "../config/interface";
 
 type Props = {
-  currentChat: UserType;
+  currentChat: IUser;
 };
 
 const ChatContainer = (props: Props) => {

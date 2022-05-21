@@ -1,5 +1,5 @@
 
-export type UserType = {
+export interface IUser {
   _id: string;
   USER_NAME: string;
   USER_EMAIL: string;

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
-import { UserType } from "../config/types";
+import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 
 type Props = {
-  contacts: UserType[];
-  changeChat: React.Dispatch<React.SetStateAction<UserType | undefined>>;
+  contacts: IUser[];
+  changeChat: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 };
 
 const Contacts = (props: Props) => {
@@ -30,7 +30,7 @@ const Contacts = (props: Props) => {
     fetchData();
   }, []);
 
-  const changeCurrentChat = (index: number, contact: UserType) => {
+  const changeCurrentChat = (index: number, contact: IUser) => {
     setCurrentSelected(index);
     changeChat(contact);
   };

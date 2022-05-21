@@ -7,7 +7,7 @@ import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
 import { io } from "socket.io-client";
-import { UserType } from "../config/types";
+import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 
 type Props = {};
@@ -15,9 +15,9 @@ type Props = {};
 const Chat = (props: Props) => {
   const navigate = useNavigate();
   const socket = useRef();
-  const [contacts, setContacts] = useState<UserType[]>([]);
-  const [currentChat, setCurrentChat] = useState<undefined | UserType>(undefined);
-  const [currentUser, setCurrentUser] = useState<undefined | UserType>(undefined);
+  const [contacts, setContacts] = useState<IUser[]>([]);
+  const [currentChat, setCurrentChat] = useState<undefined | IUser>(undefined);
+  const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
 
   useEffect(() => {
     async function fetchData() {

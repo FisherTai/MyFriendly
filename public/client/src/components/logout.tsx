@@ -14,7 +14,7 @@ const Logout = (props: Props) => {
   return (
     <Button onClick={handleClick}>
       <BiPowerOff />
-      <p>LOGOUT</p>
+      <p>登出</p>
     </Button>
   );
 };
@@ -29,7 +29,7 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
   p {
-    margin: 0 0 0 0.5rem;
+    font-weight: bold;
     color: #fff;
   }
   svg {
