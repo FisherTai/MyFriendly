@@ -6,7 +6,8 @@ import { getAllUsersRoute, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
-import { io } from "socket.io-client";
+import { io,Socket ,} from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 
@@ -14,10 +15,17 @@ type Props = {};
 
 const Chat = (props: Props) => {
   const navigate = useNavigate();
-  const socket = useRef();
+  const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const [contacts, setContacts] = useState<IUser[]>([]);
   const [currentChat, setCurrentChat] = useState<undefined | IUser>(undefined);
   const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
+
+  useEffect(() => {
+    if (currentUser) {
+      socket.current = io(host);
+      socket.current.emit("addUser", currentUser._id);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     async function fetchData() {
@@ -56,7 +64,7 @@ const Chat = (props: Props) => {
           {currentChat === undefined ? (
             <Welcome />
           ) : (
-            <ChatContainer currentChat={currentChat}  />
+            <ChatContainer currentChat={currentChat} socket={socket} />
           )}
         </div>
       </Container>

@@ -104,12 +104,20 @@ module.exports.getAllUsers = async (
       "USER_NAME",
       "USER_SEX",
       "USER_AVATAR",
-      "_id"
+      "_id",
     ]);
-    return resJson(
-      res,
-      new ResultObject(ResultCode.SUCCESS, users)
-    );
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, users));
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.logout = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.params.id) return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    onlineUsers.delete(req.params.id);
+    console.log(`delete online user:${req.params.id}`);
+    return resJson(res, new ResultObject(ResultCode.SUCCESS));
   } catch (ex) {
     next(ex);
   }

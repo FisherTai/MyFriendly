@@ -9,9 +9,14 @@ import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 import { ToastContainer, toast, ToastOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Socket } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 type Props = {
   currentChat: IUser;
+  socket: React.MutableRefObject<
+    Socket<DefaultEventsMap, DefaultEventsMap> | undefined
+  >;
 };
 
 interface MessageType {
@@ -20,9 +25,19 @@ interface MessageType {
 }
 
 const ChatContainer = (props: Props) => {
-  const { currentChat } = props;
+  const { currentChat,socket } = props;
   const [messages, setMessages] = useState<MessageType[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [arrivalMessage, setArrivalMessage] = useState<{fromSelf: boolean, message: string} | null>(null);
+
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msgRecieve", (msg) => {
+        console.log(msg);
+        setArrivalMessage({ fromSelf: false, message: msg });
+      });
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -48,6 +63,10 @@ const ChatContainer = (props: Props) => {
   }, [currentChat]);
 
   useEffect(() => {
+    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage]);
+
+  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -63,6 +82,12 @@ const ChatContainer = (props: Props) => {
     const data = await JSON.parse(
       localStorage.getItem(strings.local_storage_user)!
     );
+    console.log(msg);
+    socket.current!.emit("sendMsg", {
+      to: currentChat._id,
+      from: data._id,
+      message:msg,
+    });
     try {
       await axios.post(sendMessageRoute, {
         from: data._id,
