@@ -5,9 +5,11 @@ import styled from "styled-components";
 import Picker, { IEmojiData } from "emoji-picker-react";
 
 type Props = {
+  handleSendMsg:Function;
 };
 
 const ChatInput = (props: Props) => {
+  const { handleSendMsg } = props;
   const [msg, setMsg] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -26,7 +28,11 @@ const ChatInput = (props: Props) => {
 
   const sendChat = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+    if (msg.length > 0) {
+      handleSendMsg(msg);
+      setMsg("");
+      setShowEmojiPicker(false);
+    }
   };
 
   return (

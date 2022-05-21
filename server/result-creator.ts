@@ -22,7 +22,7 @@ export const ResultCode : IResultFlags = {
   PRODUCT_NOT_FOUND: 421,
   ORDER_NOT_FOUND: 431,
   ORDER_DATA_ERROR: 432,
-  MESSAGE_NOT_FOUND: 441,
+  MESSAGE_SEND_FAIL: 441,
   UNEXPECTED_ERROR: 500,
 };
 
@@ -44,7 +44,7 @@ const ResultCodeMessage: IResultMessage = {
   421: "該產品不存在",
   431: "該訂單不存在",
   432: "訂單產品或會員不存在",
-  441: "不存在訊息",
+  441: "訊息傳送失敗",
   500: "未預期的錯誤",
 };
 
