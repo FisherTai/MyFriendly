@@ -6,6 +6,7 @@ import { ToastContainer, toast, ToastOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setAvatarRoute } from "../utils/api-routes";
 import { Buffer } from "buffer";
+import { strings } from "../config/strings";
 
 import axios from "axios";
 type Props = {};
@@ -32,20 +33,17 @@ const SetAvatar = (props: Props) => {
       toast.error("Please select an avatar", toastOptions);
     } else {
       const user = await JSON.parse(
-        (localStorage.getItem("friendly-user"))! // TODO:
+        localStorage.getItem(strings.local_storage_user)!
       );
       const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
         image: avatars[selectedAvatar],
       });
       console.log(data);
-      
+
       if (data.data.isSet) {
         user.isAvatarImageSet = true;
         user.USER_AVATAR = data.data.image;
-        localStorage.setItem(
-          "friendly-user", // TODO:
-          JSON.stringify(user)
-        );
+        localStorage.setItem(strings.local_storage_user, JSON.stringify(user));
         navigate("/");
       } else {
         toast.error("頭像設定錯誤. 請再試一次.", toastOptions);
@@ -55,8 +53,7 @@ const SetAvatar = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!localStorage.getItem("friendly-user")) // TODO:
-      navigate("/login");
+      if (!localStorage.getItem(strings.local_storage_user)) navigate("/login");
     }
     fetchData();
   }, []);

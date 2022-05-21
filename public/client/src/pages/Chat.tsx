@@ -6,7 +6,9 @@ import { getAllUsersRoute, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
+import { io } from "socket.io-client";
 import { UserType } from "../config/types";
+import { strings } from "../config/strings";
 
 type Props = {};
 
@@ -19,12 +21,11 @@ const Chat = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!localStorage.getItem("friendly-user")) {
-        // TODO:
+      if (!localStorage.getItem(strings.local_storage_user)) {
         navigate("/login");
       } else {
         setCurrentUser(
-          await JSON.parse(localStorage.getItem("friendly-user")!)
+          await JSON.parse(localStorage.getItem(strings.local_storage_user)!)
         );
       }
     }

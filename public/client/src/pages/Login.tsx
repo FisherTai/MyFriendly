@@ -6,6 +6,7 @@ import { ToastContainer, toast, ToastOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginRoute } from "../utils/api-routes";
 import axios from "axios";
+import { strings } from "../config/strings";
 
 type Props = {};
 
@@ -22,10 +23,9 @@ const Login = (props: Props) => {
   useEffect(() => {
     if (
       localStorage.getItem(
-        /*process.env.REACT_APP_LOCALHOST_KEY*/ "friendly-user"
+        strings.local_storage_user
       )
     ) {
-      //TODO:
       navigate("/");
     }
   }, []);
@@ -45,8 +45,7 @@ const Login = (props: Props) => {
         } else {
           toast.success("登入成功.", toastOptions);
           localStorage.setItem(
-            // process.env.REACT_APP_LOCALHOST_KEY, //TODO:
-            "friendly-user",
+            strings.local_storage_user,
             JSON.stringify(data.data)
           );
           setTimeout(() => {
@@ -89,7 +88,7 @@ const Login = (props: Props) => {
         <form onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
             <img src={Logo} alt="Logo"></img>
-            <h1>Friendly</h1>
+            <h1>{strings.app_name}</h1>
           </div>
 
           <input

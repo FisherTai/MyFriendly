@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { UserType } from "../config/types";
 import styled from "styled-components";
 import WelcomePic from "../assets/welcome.gif";
+import { strings } from "../config/strings";
 
 type Props = {};
 
@@ -11,7 +12,7 @@ const Welcome = (props: Props) => {
   useEffect(() => {
     async function fetchData() {
       let username = await JSON.parse(
-        localStorage.getItem("friendly-user")! //TODO: 
+        localStorage.getItem(strings.local_storage_user)!
       ).USER_NAME;
       setUserName(username ? username : "");
     }

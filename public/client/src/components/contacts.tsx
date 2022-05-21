@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import { UserType } from "../config/types";
+import { strings } from "../config/strings";
 
 type Props = {
   contacts: UserType[];
@@ -22,7 +23,7 @@ const Contacts = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await JSON.parse(localStorage.getItem("friendly-user")!);
+      const data = await JSON.parse(localStorage.getItem(strings.local_storage_user)!);
       setCurrentUserName(data.USER_NAME);
       setCurrentUserImage(data.USER_AVATAR);
     }
@@ -40,7 +41,7 @@ const Contacts = (props: Props) => {
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h3>Friendly</h3>
+            <h3>{strings.app_name}</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {
