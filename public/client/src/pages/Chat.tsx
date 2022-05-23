@@ -29,11 +29,11 @@ const Chat = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!localStorage.getItem(strings.local_storage_user)) {
+      if (!localStorage.getItem(strings.LOCAL_STORAGE_USER)) {
         navigate("/login");
       } else {
         setCurrentUser(
-          await JSON.parse(localStorage.getItem(strings.local_storage_user)!)
+          await JSON.parse(localStorage.getItem(strings.LOCAL_STORAGE_USER)!)
         );
       }
     }

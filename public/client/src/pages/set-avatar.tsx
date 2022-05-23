@@ -33,7 +33,7 @@ const SetAvatar = (props: Props) => {
       toast.error("Please select an avatar", toastOptions);
     } else {
       const user = await JSON.parse(
-        localStorage.getItem(strings.local_storage_user)!
+        localStorage.getItem(strings.LOCAL_STORAGE_USER)!
       );
       const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
         image: avatars[selectedAvatar],
@@ -43,7 +43,7 @@ const SetAvatar = (props: Props) => {
       if (data.data.isSet) {
         user.isAvatarImageSet = true;
         user.USER_AVATAR = data.data.image;
-        localStorage.setItem(strings.local_storage_user, JSON.stringify(user));
+        localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(user));
         navigate("/");
       } else {
         toast.error("頭像設定錯誤. 請再試一次.", toastOptions);
@@ -53,7 +53,7 @@ const SetAvatar = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!localStorage.getItem(strings.local_storage_user)) navigate("/login");
+      if (!localStorage.getItem(strings.LOCAL_STORAGE_USER)) navigate("/login");
     }
     fetchData();
   }, []);

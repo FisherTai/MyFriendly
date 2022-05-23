@@ -23,7 +23,7 @@ const Contacts = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await JSON.parse(localStorage.getItem(strings.local_storage_user)!);
+      const data = await JSON.parse(localStorage.getItem(strings.LOCAL_STORAGE_USER)!);
       setCurrentUserName(data.USER_NAME);
       setCurrentUserImage(data.USER_AVATAR);
     }
@@ -41,7 +41,7 @@ const Contacts = (props: Props) => {
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h3>{strings.app_name}</h3>
+            <h3>{strings.APP_NAME}</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {

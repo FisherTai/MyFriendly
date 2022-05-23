@@ -13,7 +13,7 @@ const Logout = (props: Props) => {
   
   const handleClick = async () => {
     const id = await JSON.parse(
-      localStorage.getItem(strings.local_storage_user)!
+      localStorage.getItem(strings.LOCAL_STORAGE_USER)!
     )._id;
     const data = await axios.get(`${logoutRoute}/${id}`);
     if (data.status === 200) {

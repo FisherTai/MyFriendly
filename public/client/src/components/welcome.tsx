@@ -12,7 +12,7 @@ const Welcome = (props: Props) => {
   useEffect(() => {
     async function fetchData() {
       let username:string = await JSON.parse(
-        localStorage.getItem(strings.local_storage_user)!
+        localStorage.getItem(strings.LOCAL_STORAGE_USER)!
       ).USER_NAME;
       setUserName(username ? username : "");
     }

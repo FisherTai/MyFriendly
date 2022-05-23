@@ -42,7 +42,7 @@ const ChatContainer = (props: Props) => {
   useEffect(() => {
     async function fetchData() {
       const myInfo = await JSON.parse(
-        localStorage.getItem(strings.local_storage_user)!
+        localStorage.getItem(strings.LOCAL_STORAGE_USER)!
       );
       const { data } = await axios.post(recieveMessageRoute, {
         from: myInfo._id,
@@ -56,7 +56,7 @@ const ChatContainer = (props: Props) => {
   useEffect(() => {
     const getCurrentChat = async () => {
       if (currentChat) {
-        await JSON.parse(localStorage.getItem(strings.local_storage_user)!)._id;
+        await JSON.parse(localStorage.getItem(strings.LOCAL_STORAGE_USER)!)._id;
       }
     };
     getCurrentChat();
@@ -80,7 +80,7 @@ const ChatContainer = (props: Props) => {
 
   const handleSendMsg = async (msg: string) => {
     const data = await JSON.parse(
-      localStorage.getItem(strings.local_storage_user)!
+      localStorage.getItem(strings.LOCAL_STORAGE_USER)!
     );
     console.log(msg);
     socket.current!.emit("sendMsg", {
