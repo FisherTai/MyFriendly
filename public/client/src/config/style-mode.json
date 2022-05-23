@@ -1,0 +1,47 @@
+{
+  "daylight": {
+    "main_color": "#caffff",
+    "secondary_color": "#4e0eff",
+    "from_color": "white",
+    "text_color": "#5d5d5d",
+    "btn_text_color": "white",
+    "analogous_colour": "#997af0",
+    "chat_color": "#80ffff20",
+    "chat_input_color": "white",
+    "chat_room_color": "#E0E0E0",
+    "chat_sended_color": "#000040",
+    "chat_recieved_color": "white",
+    "chat_container_btn_color":"#000040",
+    "scroll_bar_color": "#00000070",
+    "emoji_picker_color": "#bbffff",
+    "emoji_picker_border_color": "#4f04ff40",
+    "contacts_color": "#063780",
+    "contacts_selected_color": "#4d79fd",
+    "contacts_myinfo": "#000040",
+    "contacts_text_color": "white",
+    "border_color": "#00000020"
+
+  },
+  "night": {
+    "main_color": "#131324",
+    "secondary_color": "#4e0eff",
+    "from_color": "#00000076",
+    "text_color": "white",
+    "btn_text_color": "white",
+    "analogous_colour": "#997af0",
+    "chat_color": "#080420",
+    "chat_input_color": "#1f1f1f",
+    "chat_room_color": "#00000076",
+    "chat_sended_color": "#4f04ff21",
+    "chat_recieved_color": "#9900ff20",
+    "chat_container_btn_color":"#9a86f3",
+    "scroll_bar_color": "#ffffff39",
+    "emoji_picker_color": "#080420",
+    "emoji_picker_border_color": "#9a86f3",
+    "contacts_color": "#080420",
+    "contacts_selected_color": "#9a86f3",
+    "contacts_myinfo": "#0d0d30",
+    "contacts_text_color": "white",
+    "border_color": "#FFFFFF20"
+  }
+}
