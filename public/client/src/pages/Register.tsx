@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
-import { ToastContainer, toast, ToastOptions } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/api-routes";
 import axios from "axios";
 import { strings } from "../config/strings";
+import toastOptions from "../utils/toast-options";
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {};
 
@@ -19,6 +23,10 @@ const Register = (props: Props) => {
     confirmPassword: "",
     sex: "",
   });
+
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
 
   useEffect(() => {
     if (localStorage.getItem(strings.LOCAL_STORAGE_USER)) {
@@ -39,9 +47,9 @@ const Register = (props: Props) => {
         });
         console.log(data);
         if (data.code !== 200) {
-          toast.error(data.message, toastOptions);
+          toast.error(data.message, toastOptions());
         } else {
-          toast.success("註冊成功，即將跳轉", toastOptions);
+          toast.success("註冊成功，即將跳轉", toastOptions());
           localStorage.setItem(
             strings.LOCAL_STORAGE_USER,
             JSON.stringify(data.data)
@@ -56,39 +64,22 @@ const Register = (props: Props) => {
     }
   };
 
-  const toastOptions: ToastOptions<{}> = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
-
   const handleValidation = (): boolean => {
     const { password, confirmPassword, username, email, sex } = values;
     if (password !== confirmPassword) {
-      toast.error(
-        "確認密碼不符合",
-        toastOptions
-      );
+      toast.error("確認密碼不符合", toastOptions());
       return false;
     } else if (username.length < 3) {
-      toast.error(
-        "用戶名至少需要3個字元",
-        toastOptions
-      );
+      toast.error("用戶名至少需要3個字元", toastOptions());
       return false;
     } else if (password.length < 8) {
-      toast.error(
-        "密碼至少需要8個字元",
-        toastOptions
-      );
+      toast.error("密碼至少需要8個字元", toastOptions());
       return false;
     } else if (email === "") {
-      toast.error("Email未填寫", toastOptions);
+      toast.error("Email未填寫", toastOptions());
       return false;
     } else if (sex === "") {
-      toast.error("性別未勾選", toastOptions);
+      toast.error("性別未勾選", toastOptions());
       return false;
     }
     return true;
@@ -100,7 +91,7 @@ const Register = (props: Props) => {
 
   return (
     <>
-      <FormContainer>
+      <FormContainer style={variableStyle}>
         <form onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
             <img src={Logo} alt="Logo"></img>
@@ -165,7 +156,7 @@ const Register = (props: Props) => {
   );
 };
 
-const FormContainer = styled.div`
+const FormContainer = styled.div<componentProps>`
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -173,7 +164,7 @@ const FormContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background-color: ${({ style }) => style.main_color};
   .brand {
     display: flex;
     align-items: center;
@@ -183,7 +174,7 @@ const FormContainer = styled.div`
       height: 5rem;
     }
     h1 {
-      color: white;
+      color: ${({ style }) => style.text_color};
       text-transform: uppercase;
     }
   }
@@ -191,27 +182,28 @@ const FormContainer = styled.div`
   form {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    background-color: #00000076;
+    gap: 1rem;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    background-color: ${({ style }) => style.from_color};
     border-radius: 2rem;
     padding: 3rem 5rem;
   }
   input {
     background-color: transparent;
     padding: 1rem;
-    border: 0.1rem solid #4e0eff;
+    border: 0.1rem solid ${({ style }) => style.secondary_color};
     border-radius: 0.4rem;
-    color: white;
+    color: ${({ style }) => style.text_color};
     width: 100%;
     font-size: 1rem;
     &:focus {
-      border: 0.1rem solid #997af0;
+      border: 0.1rem solid ${({ style }) => style.analogous_colour};
       outline: none;
     }
   }
   button {
-    background-color: #4e0eff;
-    color: white;
+    background-color: ${({ style }) => style.secondary_color};
+    color: ${({ style }) => style.btn_text_color};
     padding: 1rem 2rem;
     border: none;
     font-weight: bold;
@@ -220,23 +212,23 @@ const FormContainer = styled.div`
     font-size: 1rem;
     text-transform: uppercase;
     &:hover {
-      background-color: #997af0;
+      background-color: ${({ style }) => style.analogous_colour};
     }
   }
   .radio_sex {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    color: white;
+    color: ${({ style }) => style.text_color};
   }
   span {
-    color: white;
+    color: ${({ style }) => style.text_color};
     a {
-      color: #4e0eff;
+      color: ${({ style }) => style.secondary_color};
       text-decoration: none;
       font-weight: bold;
       &:hover {
-        color: #997af0;
+        color: ${({ style }) => style.analogous_colour};
       }
     }
   }

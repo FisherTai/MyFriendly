@@ -3,15 +3,22 @@ import { IUser } from "../config/interface";
 import styled from "styled-components";
 import WelcomePic from "../assets/welcome.gif";
 import { strings } from "../config/strings";
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {};
 
 const Welcome = (props: Props) => {
   const [userName, setUserName] = useState<string>("");
+ 
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
 
   useEffect(() => {
     async function fetchData() {
-      let username:string = await JSON.parse(
+      let username: string = await JSON.parse(
         localStorage.getItem(strings.LOCAL_STORAGE_USER)!
       ).USER_NAME;
       setUserName(username ? username : "");
@@ -20,7 +27,7 @@ const Welcome = (props: Props) => {
   }, []);
 
   return (
-    <Container>
+    <Container style={variableStyle}>
       <img src={WelcomePic} alt="" />
       <h1>
         歡迎, <span>{userName}!</span>
@@ -30,17 +37,17 @@ const Welcome = (props: Props) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<componentProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: ${({ style }) => style.text_color};
   flex-direction: column;
   img {
     height: 20rem;
   }
   span {
-    color: #4e0eff;
+    color: ${({ style }) => style.secondary_color};
   }
 `;
 

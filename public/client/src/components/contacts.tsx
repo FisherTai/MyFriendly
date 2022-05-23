@@ -3,6 +3,9 @@ import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {
   contacts: IUser[];
@@ -20,6 +23,10 @@ const Contacts = (props: Props) => {
   const [currentSelected, setCurrentSelected] = useState<number | undefined>(
     undefined
   );
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
+
 
   useEffect(() => {
     async function fetchData() {
@@ -38,7 +45,7 @@ const Contacts = (props: Props) => {
   return (
     <>
       {currentUserImage && currentUserName && (
-        <Container>
+        <Container style={variableStyle}>
           <div className="brand">
             <img src={Logo} alt="logo" />
             <h3>{strings.APP_NAME}</h3>
@@ -83,11 +90,14 @@ const Contacts = (props: Props) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<componentProps>`
   display: grid;
+  margin: 0 0.2rem 0 0;
   grid-template-rows: 10% 75% 15%;
   overflow: hidden;
-  background-color: #080420;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  background-color: ${({ style }) => style.contacts_color};
+  
   .brand {
     display: flex;
     align-items: center;
@@ -97,7 +107,7 @@ const Container = styled.div`
       height: 2rem;
     }
     h3 {
-      color: white;
+      color: ${({ style }) => style.contacts_text_color};
       text-transform: uppercase;
     }
   }
@@ -108,9 +118,9 @@ const Container = styled.div`
     overflow: auto;
     gap: 0.8rem;
     &::-webkit-scrollbar {
-      width: 0.2rem;
+      width: 0.5rem;
       &-thumb {
-        background-color: #ffffff39;
+        background-color: ${({ style }) => style.scroll_bar_color};
         width: 0.1rem;
         border-radius: 1rem;
       }
@@ -133,17 +143,17 @@ const Container = styled.div`
       }
       .username {
         h3 {
-          color: white;
+          color: ${({ style }) => style.contacts_text_color};
         }
       }
     }
     .selected {
-      background-color: #9a86f3;
+      background-color: ${({ style }) => style.contacts_selected_color};
     }
   }
 
   .current-user {
-    background-color: #0d0d30;
+    background-color: ${({ style }) => style.contacts_myinfo};;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -156,7 +166,7 @@ const Container = styled.div`
     }
     .username {
       h2 {
-        color: white;
+        color: ${({ style }) => style.contacts_text_color};
       }
     }
     @media screen and (min-width: 720px) and (max-width: 1080px) {

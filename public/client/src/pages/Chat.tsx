@@ -6,10 +6,13 @@ import { getAllUsersRoute, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
-import { io,Socket ,} from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {};
 
@@ -19,6 +22,10 @@ const Chat = (props: Props) => {
   const [contacts, setContacts] = useState<IUser[]>([]);
   const [currentChat, setCurrentChat] = useState<undefined | IUser>(undefined);
   const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
+
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
 
   useEffect(() => {
     if (currentUser) {
@@ -58,9 +65,9 @@ const Chat = (props: Props) => {
 
   return (
     <>
-      <Container>
+      <Container style={variableStyle}>
         <div className="container">
-          <Contacts contacts={contacts} changeChat={ setCurrentChat } />
+          <Contacts contacts={contacts} changeChat={setCurrentChat} />
           {currentChat === undefined ? (
             <Welcome />
           ) : (
@@ -72,7 +79,7 @@ const Chat = (props: Props) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<componentProps>`
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -80,11 +87,13 @@ const Container = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background-color: ${({ style }) => style.main_color};
   .container {
+    border-radius: 2rem;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
     height: 85vh;
     width: 85vw;
-    background-color: #00000076;
+    background-color: ${({ style }) => style.chat_room_color};
     display: grid;
     grid-template-columns: 25% 75%;
     @media screen and (min-width: 720px) and (max-width: 1080px) {

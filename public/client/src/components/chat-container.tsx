@@ -7,10 +7,14 @@ import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/api-routes";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
-import { ToastContainer, toast, ToastOptions } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
+import toastOptions from "../utils/toast-options"
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {
   currentChat: IUser;
@@ -29,6 +33,9 @@ const ChatContainer = (props: Props) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [arrivalMessage, setArrivalMessage] = useState<{fromSelf: boolean, message: string} | null>(null);
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
 
   useEffect(() => {
     if (socket.current) {
@@ -70,14 +77,6 @@ const ChatContainer = (props: Props) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const toastOptions: ToastOptions<{}> = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
-
   const handleSendMsg = async (msg: string) => {
     const data = await JSON.parse(
       localStorage.getItem(strings.LOCAL_STORAGE_USER)!
@@ -98,13 +97,13 @@ const ChatContainer = (props: Props) => {
       msgs.push({ fromSelf: true, message: msg });
       setMessages(msgs);
     } catch (error: any) {
-      toast.error(error.message, toastOptions);
+      toast.error(error.message, toastOptions());
     }
   };
 
   return (
     <>
-      <Container>
+      <Container style={variableStyle}>
         <div className="chat-header">
           <div className="user-details">
             <div className="avatar">
@@ -143,9 +142,9 @@ const ChatContainer = (props: Props) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<componentProps>`
   display: grid;
-  grid-template-rows: 10% 80% 10%;
+  grid-template-rows: 15% 75% 10%;
   gap: 0.1rem;
   overflow: hidden;
   @media screen and (min-width: 720px) and (max-width: 1080px) {
@@ -153,6 +152,7 @@ const Container = styled.div`
   }
   .chat-header {
     display: flex;
+    border-bottom: 0.2rem solid ${({ style }) => style.border_color};
     justify-content: space-between;
     align-items: center;
     padding: 0 2rem;
@@ -167,7 +167,7 @@ const Container = styled.div`
       }
       .username {
         h3 {
-          color: white;
+          color: ${({ style }) => style.text_color};
         }
       }
     }
@@ -181,7 +181,7 @@ const Container = styled.div`
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
-        background-color: #ffffff39;
+        background-color: ${({ style }) => style.scroll_bar_color};
         width: 0.1rem;
         border-radius: 1rem;
       }
@@ -193,9 +193,9 @@ const Container = styled.div`
         max-width: 40%;
         overflow-wrap: break-word;
         padding: 1rem;
-        font-size: 1.1rem;
+        font-size: 1rem;
         border-radius: 1rem;
-        color: #d1d1d1;
+        color: ${({ style }) => style.text_color};
         @media screen and (min-width: 720px) and (max-width: 1080px) {
           max-width: 70%;
         }
@@ -204,13 +204,15 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        color:white;
+        background-color: ${({ style }) => style.chat_sended_color};
       }
     }
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        border: 0.1px solid #0a0a13;
+        background-color: ${({ style }) => style.chat_recieved_color};
       }
     }
   }

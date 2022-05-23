@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import loader from "../assets/loader.gif";
-import { ToastContainer, toast, ToastOptions } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setAvatarRoute } from "../utils/api-routes";
 import { Buffer } from "buffer";
 import { strings } from "../config/strings";
+import toastOptions from "../utils/toast-options";
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 import axios from "axios";
 type Props = {};
@@ -20,17 +24,13 @@ const SetAvatar = (props: Props) => {
     undefined
   );
 
-  const toastOptions: ToastOptions<{}> = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
 
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
-      toast.error("Please select an avatar", toastOptions);
+      toast.error("Please select an avatar", toastOptions());
     } else {
       const user = await JSON.parse(
         localStorage.getItem(strings.LOCAL_STORAGE_USER)!
@@ -46,7 +46,7 @@ const SetAvatar = (props: Props) => {
         localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(user));
         navigate("/");
       } else {
-        toast.error("頭像設定錯誤. 請再試一次.", toastOptions);
+        toast.error("頭像設定錯誤. 請再試一次.", toastOptions());
       }
     }
   };
@@ -77,11 +77,11 @@ const SetAvatar = (props: Props) => {
   return (
     <>
       {isLoading ? (
-        <Container>
+        <Container style={variableStyle}>
           <img src={loader} alt="loader" className="loader" />
         </Container>
       ) : (
-        <Container>
+        <Container style={variableStyle}>
           <div className="title-container">
             <h1>選擇你的頭像</h1>
           </div>
@@ -113,13 +113,13 @@ const SetAvatar = (props: Props) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<componentProps>`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 3rem;
-  background-color: #131324;
+  background-color: ${({ style }) => style.main_color};
   height: 100vh;
   width: 100vw;
 
@@ -129,7 +129,7 @@ const Container = styled.div`
 
   .title-container {
     h1 {
-      color: white;
+      color: ${({ style }) => style.text_color};
     }
   }
   .avatars {
@@ -151,12 +151,12 @@ const Container = styled.div`
       }
     }
     .selected {
-      border: 0.4rem solid #4e0eff;
+      border: 0.4rem solid ${({ style }) => style.secondary_color};
     }
   }
   .submit-btn {
-    background-color: #4e0eff;
-    color: white;
+    background-color: ${({ style }) => style.secondary_color};
+    color: ${({ style }) => style.btn_text_color};
     padding: 1rem 2rem;
     border: none;
     font-weight: bold;
@@ -165,7 +165,7 @@ const Container = styled.div`
     font-size: 1rem;
     text-transform: uppercase;
     &:hover {
-      background-color: #8557ff;
+      background-color: ${({ style }) => style.analogous_colour};
     }
   }
 `;

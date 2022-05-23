@@ -5,12 +5,19 @@ import axios from "axios";
 import { BiPowerOff } from "react-icons/bi";
 import { logoutRoute } from "../utils/api-routes";
 import { strings } from "../config/strings";
+import { componentProps } from "../config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {};
 
 const Logout = (props: Props) => {
   const navigate = useNavigate();
-  
+
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
+
   const handleClick = async () => {
     const id = await JSON.parse(
       localStorage.getItem(strings.LOCAL_STORAGE_USER)!
@@ -22,20 +29,20 @@ const Logout = (props: Props) => {
     }
   };
   return (
-    <Button onClick={handleClick}>
+    <Button onClick={handleClick} style={variableStyle}>
       <BiPowerOff />
       <p>登出</p>
     </Button>
   );
 };
 
-const Button = styled.button`
+const Button = styled.button<componentProps>`
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
   border-radius: 0.5rem;
-  background-color: #9a86f3;
+  background-color: ${({ style }) => style.chat_container_btn_color};
   border: none;
   cursor: pointer;
   p {
