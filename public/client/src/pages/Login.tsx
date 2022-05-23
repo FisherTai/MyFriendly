@@ -21,11 +21,7 @@ const Login = (props: Props) => {
   });
 
   useEffect(() => {
-    if (
-      localStorage.getItem(
-        strings.local_storage_user
-      )
-    ) {
+    if (localStorage.getItem(strings.LOCAL_STORAGE_USER)) {
       navigate("/");
     }
   }, []);
@@ -45,7 +41,7 @@ const Login = (props: Props) => {
         } else {
           toast.success("登入成功.", toastOptions);
           localStorage.setItem(
-            strings.local_storage_user,
+            strings.LOCAL_STORAGE_USER,
             JSON.stringify(data.data)
           );
           setTimeout(() => {
@@ -88,7 +84,7 @@ const Login = (props: Props) => {
         <form onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
             <img src={Logo} alt="Logo"></img>
-            <h1>{strings.app_name}</h1>
+            <h1>{strings.APP_NAME}</h1>
           </div>
 
           <input
