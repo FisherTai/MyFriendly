@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 const userRoutes = require("./routes/user-route");
 const messageRoutes = require("./routes/message-route");
 import { Server } from "socket.io";
@@ -11,11 +12,17 @@ import {
   InterServerEvents,
   SocketData,
 } from "./socket-io-interface";
+
 global.customLog = (tag: string, message: string) => console.log(`${new Date()}, ${tag}: ${message}`);
+
 const app = express();
 dotenv.config();
-
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000"],
+  methods: ["GET","PATCH","POST","DELETE"],
+  credentials: true,
+}));
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", userRoutes);

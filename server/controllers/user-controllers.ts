@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { ResultObject, ResultCode } from "../result-creator";
+import jwt from "jsonwebtoken";
+
 const User = require("../models/user-model");
 
 module.exports.register = async (
@@ -22,6 +24,16 @@ module.exports.register = async (
       USER_PW: hashedPassword,
       USER_SEX: sex,
     });
+    // 建立token
+    const tokenObject = {
+      _id: user._id,
+      USER_SEX: user.USER_SEX,
+      expiresIn: "7d",
+    };
+    const token = jwt.sign(tokenObject, process.env.SECRET!);
+
+    const maxAge = 3 * 24 * 60 * 60;
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     // 無法直接對mongoose的物件進行操作，因次創建一個新物件
     const resUser = {
       ...user._doc,
@@ -52,12 +64,25 @@ module.exports.login = async (
     if (!isPasswordValid) {
       return resJson(res, new ResultObject(ResultCode.WRONG_USER_OR_PASSWORD));
     }
+
+    //建立token
+    const tokenObject = {
+      _id: findUser._id,
+      USER_SEX: findUser.USER_SEX,
+      expiresIn: "7d",
+    };
+    const token = jwt.sign(tokenObject, process.env.SECRET!);
+
+    const maxAge = 3 * 24 * 60 * 60;
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
     // 無法直接對mongoose的物件進行操作，因次創建一個新物件
     const resUser = {
       ...findUser._doc,
       USER_PW: undefined,
       USER_POINT: undefined,
       USER_REPORT: undefined,
+      JWT: token,
     };
     return resJson(res, new ResultObject(ResultCode.SUCCESS, resUser));
   } catch (err: any) {
@@ -116,14 +141,19 @@ module.exports.logout = (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.params.id) return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
     onlineUsers.delete(req.params.id);
-    console.log(`delete online user:${req.params.id}`);
-    return resJson(res, new ResultObject(ResultCode.SUCCESS));
+    //因為cookie設置為httpOnly，因此要從後端再次設置覆蓋
+    res.cookie("jwt", "", {
+      expires: new Date(Date.now() + 1 * 1000), //重新設置過期時間
+      httpOnly: true,  //或是設置為false，然後在前端將其清除
+    });
+    customLog("logout")
+    return res.send(new ResultObject(ResultCode.SUCCESS));
   } catch (ex) {
     next(ex);
   }
 };
 
-const resJson = (res: Response, result: ResultObject) => {
-  console.log(result);
+const resJson = (res: Response, result: ResultObject, tag?: string) => {
+  customLog(tag ? tag : "", JSON.stringify(result));
   return res.send(result);
 };

@@ -5,4 +5,5 @@ export interface IUser {
   USER_EMAIL: string;
   USER_SEX: string;
   USER_AVATAR: string;
+  JWT: string;
 };
