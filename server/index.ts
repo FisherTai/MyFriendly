@@ -11,6 +11,7 @@ import {
   InterServerEvents,
   SocketData,
 } from "./socket-io-interface";
+global.customLog = (tag: string, message: string) => console.log(`${new Date()}, ${tag}: ${message}`);
 const app = express();
 dotenv.config();
 
