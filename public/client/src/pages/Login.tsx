@@ -10,7 +10,7 @@ import { strings } from "../config/strings";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { componentProps } from "../config/style-mode-interface";
-import toastOptions from "../utils/toast-options"
+import toastOptions from "../utils/toast-options";
 type Props = {};
 
 const Login = (props: Props) => {
@@ -38,10 +38,14 @@ const Login = (props: Props) => {
     if (handleValidation()) {
       const { email, password } = values;
       try {
-        const { data } = await axios.post(loginRoute, {
-          email,
-          password,
-        });
+        const { data } = await axios.post(
+          loginRoute,
+          {
+            email,
+            password,
+          },
+          { withCredentials: true }
+        );
         console.log(data);
         if (data.code !== 200) {
           toast.error(data.message, toastOptions());
@@ -138,7 +142,7 @@ const FormContainer = styled.div<componentProps>`
   form {
     display: flex;
     flex-direction: column;
-    gap: 2rem;  
+    gap: 2rem;
     background-color: ${({ style }) => style.from_color};
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
     border-radius: 2rem;

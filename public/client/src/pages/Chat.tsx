@@ -53,7 +53,8 @@ const Chat = (props: Props) => {
         if (currentUser.USER_AVATAR) {
           const { data } = await axios.get(
             `${getAllUsersRoute}/${currentUser._id}`
-          );
+            ,
+            { withCredentials: true });
           setContacts(data.data);
         } else {
           navigate("/setAvatar");

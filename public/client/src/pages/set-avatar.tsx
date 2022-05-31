@@ -37,7 +37,8 @@ const SetAvatar = (props: Props) => {
       );
       const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
         image: avatars[selectedAvatar],
-      });
+      },
+      { withCredentials: true });
       console.log(data);
 
       if (data.data.isSet) {
