@@ -28,9 +28,8 @@ module.exports.register = async (
     const tokenObject = {
       _id: user._id,
       USER_SEX: user.USER_SEX,
-      expiresIn: "7d",
     };
-    const token = jwt.sign(tokenObject, process.env.SECRET!);
+    const token = jwt.sign(tokenObject, process.env.SECRET!, { expiresIn: '7 day' });
 
     const maxAge = 3 * 24 * 60 * 60;
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
@@ -53,7 +52,6 @@ module.exports.login = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.body);
   try {
     const { email, password } = req.body;
     const findUser = await User.findOne({ USER_EMAIL: email });
@@ -139,14 +137,15 @@ module.exports.getAllUsers = async (
 
 module.exports.logout = (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.params.id) return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    if (!req.params.id)
+      return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
     onlineUsers.delete(req.params.id);
     //因為cookie設置為httpOnly，因此要從後端再次設置覆蓋
     res.cookie("jwt", "", {
       expires: new Date(Date.now() + 1 * 1000), //重新設置過期時間
-      httpOnly: true,  //或是設置為false，然後在前端將其清除
+      httpOnly: true, //或是設置為false，然後在前端將其清除
     });
-    customLog("logout")
+    customLog("logout","logout success");
     return res.send(new ResultObject(ResultCode.SUCCESS));
   } catch (ex) {
     next(ex);
