@@ -1,9 +1,8 @@
-const Messages = require("../models/message-model");
-import { IMessage } from "../models/message-model";
+import Messages from "../models/message-model";
 import { Request, Response, NextFunction } from "express";
 import { ResultObject, ResultCode } from "../result-creator";
 
-module.exports.getMessages = async (
+export const getMessages = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -11,7 +10,7 @@ module.exports.getMessages = async (
   try {
     const { from, to } = req.body;
 
-    const messages: IMessage[] = await Messages.find({
+    const messages = await Messages.find({
       users: {
         $all: [from, to],
       },
@@ -23,13 +22,13 @@ module.exports.getMessages = async (
         message: msg.message.text,
       };
     });
-    resJson(res, new ResultObject(ResultCode.SUCCESS, projectedMessages));
+    return res.send(new ResultObject(ResultCode.SUCCESS, projectedMessages));
   } catch (ex) {
     next(ex);
   }
 };
 
-module.exports.addMessage = async (
+export const addMessage = async (
   req: Request,
   res: Response,
   next: NextFunction

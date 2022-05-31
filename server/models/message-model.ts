@@ -1,11 +1,11 @@
-import mongoose, { Model, Schema, model } from "mongoose";
+import mongoose, { Model, Schema, model,Types } from "mongoose";
 
 /**
  * Create an interface representing a document in MongoDB.
  */
- export interface IMessage {
+interface IMessage {
   message: {text: string};
-  users: Array<string>;
+  users: Types.Array<string>;
   sender: mongoose.Schema.Types.ObjectId;
 }
 /**
@@ -44,4 +44,4 @@ messageSchema.method("isFromSelf", function isFromSelf() {
   return this.USER_AVATAR !== "";
 });
 
-module.exports = model<IMessage, MessageModel>("MESSAGE", messageSchema);
+export default model<IMessage, MessageModel>("MESSAGE", messageSchema);

@@ -2,10 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { ResultObject, ResultCode } from "../result-creator";
 import jwt from "jsonwebtoken";
+import User from "../models/user-model";
 
-const User = require("../models/user-model");
-
-module.exports.register = async (
+export const register = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -47,7 +46,7 @@ module.exports.register = async (
   }
 };
 
-module.exports.login = async (
+export const login = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -89,7 +88,7 @@ module.exports.login = async (
   }
 };
 
-module.exports.setAvatar = async (
+export const setAvatar = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -104,19 +103,23 @@ module.exports.setAvatar = async (
       },
       { new: true }
     );
-    return resJson(
-      res,
-      new ResultObject(ResultCode.SUCCESS, {
-        isSet: userData.isAvatarImageSet(),
-        image: userData.USER_AVATAR,
-      })
-    );
+    if (userData) {
+      return resJson(
+        res,
+        new ResultObject(ResultCode.SUCCESS, {
+          isSet: userData.isAvatarImageSet(),
+          image: userData.USER_AVATAR,
+        })  
+      );
+    } else {
+      return resJson(res, new ResultObject(ResultCode.UNEXPECTED_ERROR));
+    }
   } catch (ex) {
     next(ex);
   }
 };
 
-module.exports.getAllUsers = async (
+export const getAllUsers = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -135,7 +138,7 @@ module.exports.getAllUsers = async (
   }
 };
 
-module.exports.logout = (req: Request, res: Response, next: NextFunction) => {
+export const logout = (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.params.id)
       return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));

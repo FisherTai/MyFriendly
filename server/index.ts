@@ -3,8 +3,8 @@ import cors from "cors";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-const userRoutes = require("./routes/user-route");
-const messageRoutes = require("./routes/message-route");
+import userRoutes from "./routes/user-route";
+import messageRoutes from "./routes/message-route";
 import { Server } from "socket.io";
 import {
   ServerToClientEvents,

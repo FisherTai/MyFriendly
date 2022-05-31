@@ -4,6 +4,7 @@ import { Model, Schema, model } from "mongoose";
  * Create an interface representing a document in MongoDB.
  */
 interface IUser {
+  _id: string;
   USER_NAME: string;
   USER_EMAIL: string;
   USER_PW: string;
@@ -11,6 +12,7 @@ interface IUser {
   USER_AVATAR?: string;
   USER_POINTS?: number;
   USER_REPORT?: number;
+  _doc?: any
 }
 /**
  * Put all user instance methods in this interface:
@@ -64,6 +66,8 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     type: Number,
     default: 0,
   },
+},{
+  timestamps:true,
 });
 
 userSchema.method("isAvatarImageSet", function isAvatarImageSet() {
@@ -74,4 +78,5 @@ userSchema.method("isMale", function isMale() {
   return this.USER_SEX === 1;
 });
 
-module.exports = model<IUser, UserModel>("USER", userSchema);
+// module.exports = model<IUser, UserModel>("USER", userSchema);
+export default module.exports = model<IUser, UserModel>("USER", userSchema);
