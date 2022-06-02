@@ -54,7 +54,8 @@ const ChatContainer = (props: Props) => {
       const { data } = await axios.post(recieveMessageRoute, {
         from: myInfo._id,
         to: currentChat._id,
-      });
+      },
+      { withCredentials: true });
       setMessages(data.data);
     }
     fetchData();
@@ -92,7 +93,8 @@ const ChatContainer = (props: Props) => {
         from: data._id,
         to: currentChat._id,
         message: msg,
-      });
+      },
+      { withCredentials: true });
       const msgs = [...messages];
       msgs.push({ fromSelf: true, message: msg });
       setMessages(msgs);
