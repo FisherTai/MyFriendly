@@ -20,6 +20,7 @@ export interface IColor {
   contacts_myinfo:string;
   border_color:string;
   contacts_text_color:string;
+  nav_bar_color:string;
 }
 
 export interface IStyleMode {

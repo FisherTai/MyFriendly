@@ -1,29 +1,42 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import Register from "./pages/register";
-import Chat from "./pages/chat";
-import Login from "./pages/login";
-import Store from "./pages/store";
-import SetAvatar from "./pages/set-avatar";
-import { changeStyles } from "./redux/reducers/style-config-slice";
-import { isDaylightMode } from "./utils/untils"
+import NavBar from "./components/nav-bar";
+import Container from "./pages/routes";
+import styled from "styled-components";
+import { componentProps } from "./config/style-mode-interface";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
+
+export type privateProps = {
+  children: JSX.Element;
+};
 
 function App() {
-  //TODO: for test
-  const dispatch = useDispatch();
-  return (  
-    <BrowserRouter>
-      <button style={{zIndex:9999, position:"relative"}} onClick={() => dispatch(changeStyles(isDaylightMode()))}>change</button>
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/setavatar" element={<SetAvatar />} />
-        <Route path="/" element={<Chat />} />
-      </Routes>
-    </BrowserRouter>
+  const variableStyle = useSelector(
+    (state: RootState) => state.styleMode.value
+  );
+
+  return (
+    <AppStyled style={variableStyle}>
+      <NavBar />
+      <Container />
+    </AppStyled>
   );
 }
+
+const AppStyled = styled.div<componentProps>`
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  align-items: center;
+  background-color: ${({ style }) => style.main_color};
+  grid-template-columns: 10% 90%;
+  @media screen and (min-width: 720px) and (max-width: 1080px) {
+    grid-template-columns: 25% 75%;
+  }
+  .main_body{
+    display: grid;
+    grid-template-rows:90% 10%;
+  }
+`;
 
 export default App;

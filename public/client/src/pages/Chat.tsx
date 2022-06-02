@@ -82,13 +82,11 @@ const Chat = (props: Props) => {
 
 const Container = styled.div<componentProps>`
   height: 100vh;
-  width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: ${({ style }) => style.main_color};
   .container {
     border-radius: 2rem;
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);

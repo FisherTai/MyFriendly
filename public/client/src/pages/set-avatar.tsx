@@ -120,7 +120,6 @@ const Container = styled.div<componentProps>`
   align-items: center;
   flex-direction: column;
   gap: 3rem;
-  background-color: ${({ style }) => style.main_color};
   height: 100vh;
   width: 100vw;
 
