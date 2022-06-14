@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../assets/logo.png";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { registerRoute } from "../utils/api-routes";
 import axios from "axios";
+import styled from "styled-components";
+
+import Logo from "../assets/logo.png";
+import { registerRoute } from "../utils/api-routes";
 import { strings } from "../config/strings";
 import toastOptions from "../utils/toast-options";
 import { componentProps } from "../config/style-mode-interface";
 import { setCurrentUser } from "../redux/reducers/current-user-slice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 
-type Props = {};
 
-const Register = (props: Props) => {
+const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [values, setValues] = useState({
@@ -30,12 +30,6 @@ const Register = (props: Props) => {
   const variableStyle = useSelector(
     (state: RootState) => state.styleMode.value
   );
-
-  useEffect(() => {
-    if (localStorage.getItem(strings.LOCAL_STORAGE_USER)) {
-      navigate("/");
-    }
-  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

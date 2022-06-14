@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../assets/logo.png";
-import { ToastContainer, toast, ToastOptions } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { loginRoute } from "../utils/api-routes";
+import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import { strings } from "../config/strings";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../redux/reducers/current-user-slice";
+import "react-toastify/dist/ReactToastify.css";
+
 import { RootState } from "../redux/store";
 import { componentProps } from "../config/style-mode-interface";
 import toastOptions from "../utils/toast-options";
-type Props = {};
+import { setCurrentUser } from "../redux/reducers/current-user-slice";
+import { strings } from "../config/strings";
+import { loginRoute } from "../utils/api-routes";
+import Logo from "../assets/logo.png";
 
-const Login = (props: Props) => {
+const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,15 +24,7 @@ const Login = (props: Props) => {
     password: "",
   });
 
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
-
-  useEffect(() => {
-    if (localStorage.getItem(strings.LOCAL_STORAGE_USER)) {
-      navigate("/");
-    }
-  }, []);
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,10 +44,7 @@ const Login = (props: Props) => {
           toast.error(data.message, toastOptions());
         } else {
           toast.success("登入成功.", toastOptions());
-          localStorage.setItem(
-            strings.LOCAL_STORAGE_USER,
-            JSON.stringify(data.data)
-          );
+          localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(data.data));
           setTimeout(() => {
             dispatch(setCurrentUser(data.data));
             navigate("/");
@@ -92,20 +81,9 @@ const Login = (props: Props) => {
             <h1>{strings.APP_NAME}</h1>
           </div>
 
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            onChange={(event) => handleChange(event)}
-          />
+          <input type="email" placeholder="Email" name="email" onChange={(event) => handleChange(event)} />
 
-          <input
-            type="password"
-            placeholder="密碼"
-            name="password"
-            min="3"
-            onChange={(event) => handleChange(event)}
-          />
+          <input type="password" placeholder="密碼" name="password" min="3" onChange={(event) => handleChange(event)} />
 
           <button type="submit">登入</button>
           <span>

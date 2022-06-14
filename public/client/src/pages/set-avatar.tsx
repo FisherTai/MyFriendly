@@ -42,7 +42,6 @@ const SetAvatar = (props: Props) => {
       console.log(data);
 
       if (data.data.isSet) {
-        user.isAvatarImageSet = true;
         user.USER_AVATAR = data.data.image;
         localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(user));
         navigate("/");

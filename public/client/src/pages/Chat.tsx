@@ -1,31 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
+
 import { getAllUsersRoute, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
-import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
-import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { getLocalStorageUser } from "../utils/untils";
 
-type Props = {};
-
-const Chat = (props: Props) => {
+const Chat = () => {
   const navigate = useNavigate();
   const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const [contacts, setContacts] = useState<IUser[]>([]);
   const [currentChat, setCurrentChat] = useState<undefined | IUser>(undefined);
   const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
 
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   useEffect(() => {
     if (currentUser) {
@@ -36,13 +34,7 @@ const Chat = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!localStorage.getItem(strings.LOCAL_STORAGE_USER)) {
-        navigate("/login");
-      } else {
-        setCurrentUser(
-          await JSON.parse(localStorage.getItem(strings.LOCAL_STORAGE_USER)!)
-        );
-      }
+      setCurrentUser(getLocalStorageUser()!);
     }
     fetchData();
   }, []);
@@ -51,10 +43,7 @@ const Chat = (props: Props) => {
     async function fetchData() {
       if (currentUser) {
         if (currentUser.USER_AVATAR) {
-          const { data } = await axios.get(
-            `${getAllUsersRoute}/${currentUser._id}`
-            ,
-            { withCredentials: true });
+          const { data } = await axios.get(`${getAllUsersRoute}/${currentUser._id}`, { withCredentials: true });
           setContacts(data.data);
         } else {
           navigate("/setAvatar");
@@ -62,18 +51,14 @@ const Chat = (props: Props) => {
       }
     }
     fetchData();
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   return (
     <>
       <Container style={variableStyle}>
         <div className="container">
           <Contacts contacts={contacts} changeChat={setCurrentChat} />
-          {currentChat === undefined ? (
-            <Welcome />
-          ) : (
-            <ChatContainer currentChat={currentChat} socket={socket} />
-          )}
+          {currentChat === undefined ? <Welcome /> : <ChatContainer currentChat={currentChat} socket={socket} />}
         </div>
       </Container>
     </>

@@ -1,38 +1,28 @@
-import React from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { strings } from "../config/strings";
-import Logo from "../assets/logo.png";
-import { changeStyles } from "../redux/reducers/style-config-slice";
-import { isDaylightMode } from "../utils/untils";
-import { componentProps } from "../config/style-mode-interface";
-import Logout from "./logout";
-
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { BiStore, BiLogIn, BiPowerOff, BiRegistered } from "react-icons/bi";
+import { BiStore, BiLogIn, BiRegistered } from "react-icons/bi";
 import { TbFriends } from "react-icons/tb";
 import { BsFillChatSquareDotsFill } from "react-icons/bs";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 
-type Props = {};
+import { strings } from "../config/strings";
+import Logo from "../assets/logo.png";
+import { changeStyles } from "../redux/reducers/style-config-slice";
+import { RootState } from "../redux/store";
+import { isDaylightMode } from "../utils/untils";
+import { componentProps } from "../config/style-mode-interface";
+import Logout from "./logout";
 
 const setClassName = (navData: { isActive: boolean }): string => {
   return navData.isActive ? "selected" : "";
 };
 
-const NavBar = (props: Props) => {
+const NavBar = () => {
   const dispatch = useDispatch();
-
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
-
-  const currentUser = useSelector(
-    (state: RootState) => state.currentUser.value
-  );
-
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
+  const currentUser = useSelector((state: RootState) => state.currentUser.value);
 
   return (
     <NavBarContainer className="side_bar" style={variableStyle}>
@@ -46,15 +36,19 @@ const NavBar = (props: Props) => {
           {isDaylightMode() ? "日間" : "夜間"}
         </button>
 
-        {!(currentUser) && <NavLink className={(navData) => setClassName(navData)} to="/register">
-          <BiRegistered />
-          註冊
-        </NavLink>}
+        {!currentUser && (
+          <NavLink className={(navData) => setClassName(navData)} to="/register">
+            <BiRegistered />
+            註冊
+          </NavLink>
+        )}
 
-        {!(currentUser) && <NavLink className={(navData) => setClassName(navData)} to="/login">
-          <BiLogIn />
-          登入
-        </NavLink>}
+        {!currentUser && (
+          <NavLink className={(navData) => setClassName(navData)} to="/login">
+            <BiLogIn />
+            登入
+          </NavLink>
+        )}
 
         <NavLink className={(navData) => setClassName(navData)} to="/store">
           <BiStore />
@@ -66,17 +60,15 @@ const NavBar = (props: Props) => {
           配對
         </NavLink>
 
-        <NavLink className={(navData) => setClassName(navData)} to="/chat">
+        <NavLink className={(navData) => setClassName(navData)} to="/">
           <BsFillChatSquareDotsFill />
           聊天
         </NavLink>
-        
-        {(currentUser) && <Logout />}
+
+        {currentUser && <Logout />}
       </div>
-      
-      <div className="copyright">
-        Copyright © FisherTai {new Date().getFullYear()}.
-      </div>
+
+      <div className="copyright">Copyright © FisherTai {new Date().getFullYear()}.</div>
     </NavBarContainer>
   );
 };
@@ -155,7 +147,7 @@ const NavBarContainer = styled.div<componentProps>`
     }
 
     svg {
-      margin:0 0.5rem 0 0;
+      margin: 0 0.5rem 0 0;
     }
   }
   .copyright {
