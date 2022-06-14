@@ -14,6 +14,7 @@ import { setCurrentUser } from "../redux/reducers/current-user-slice";
 import { strings } from "../config/strings";
 import { loginRoute } from "../utils/api-routes";
 import Logo from "../assets/logo.png";
+import { setLocalStorageUser } from "../utils/untils";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Login = () => {
           toast.error(data.message, toastOptions());
         } else {
           toast.success("登入成功.", toastOptions());
-          localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(data.data));
+          setLocalStorageUser(data.data);
           setTimeout(() => {
             dispatch(setCurrentUser(data.data));
             navigate("/");

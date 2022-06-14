@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+
 import Logo from "../assets/logo.png";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
-import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { getLocalStorageUser } from "../utils/untils";
 
 type Props = {
   contacts: IUser[];
@@ -14,25 +16,16 @@ type Props = {
 
 const Contacts = (props: Props) => {
   const { contacts, changeChat } = props;
-  const [currentUserName, setCurrentUserName] = useState<string | undefined>(
-    undefined
-  );
-  const [currentUserImage, setCurrentUserImage] = useState<string | undefined>(
-    undefined
-  );
-  const [currentSelected, setCurrentSelected] = useState<number | undefined>(
-    undefined
-  );
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
-
+  const [currentUserName, setCurrentUserName] = useState<string | undefined>(undefined);
+  const [currentUserImage, setCurrentUserImage] = useState<string | undefined>(undefined);
+  const [currentSelected, setCurrentSelected] = useState<number | undefined>(undefined);
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   useEffect(() => {
     async function fetchData() {
-      const data = await JSON.parse(localStorage.getItem(strings.LOCAL_STORAGE_USER)!);
-      setCurrentUserName(data.USER_NAME);
-      setCurrentUserImage(data.USER_AVATAR);
+      const { USER_NAME, USER_AVATAR } = getLocalStorageUser()!;
+      setCurrentUserName(USER_NAME);
+      setCurrentUserImage(USER_AVATAR);
     }
     fetchData();
   }, []);
@@ -53,18 +46,9 @@ const Contacts = (props: Props) => {
           <div className="contacts">
             {contacts.map((contact, index) => {
               return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
+                <div key={contact._id} className={`contact ${index === currentSelected ? "selected" : ""}`} onClick={() => changeCurrentChat(index, contact)}>
                   <div className="avatar">
-                    <img
-                      src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`}
-                      alt=""
-                    />
+                    <img src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`} alt="" />
                   </div>
                   <div className="username">
                     <h3>{contact.USER_NAME}</h3>
@@ -75,10 +59,7 @@ const Contacts = (props: Props) => {
           </div>
           <div className="current-user">
             <div className="avatar">
-              <img
-                src={`data:image/svg+xml;base64,${currentUserImage}`}
-                alt="avatar"
-              />
+              <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avatar" />
             </div>
             <div className="username">
               <h2>{currentUserName}</h2>
@@ -97,7 +78,7 @@ const Container = styled.div<componentProps>`
   overflow: hidden;
   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
   background-color: ${({ style }) => style.contacts_color};
-  
+
   .brand {
     display: flex;
     align-items: center;
@@ -153,7 +134,7 @@ const Container = styled.div<componentProps>`
   }
 
   .current-user {
-    background-color: ${({ style }) => style.contacts_myinfo};;
+    background-color: ${({ style }) => style.contacts_myinfo};
     display: flex;
     justify-content: center;
     align-items: center;

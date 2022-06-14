@@ -17,6 +17,10 @@ export const getLocalStorageUser = () => {
   return user;
 };
 
+export const setLocalStorageUser = (user: IUser): void => {
+  localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(user));
+};
+
 export const getLocalStorageUserString = () => {
   return localStorage.getItem(strings.LOCAL_STORAGE_USER);
 };

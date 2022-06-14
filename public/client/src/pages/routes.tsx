@@ -1,16 +1,16 @@
 import { ReactElement } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Register from "../pages/register";
-import Chat from "../pages/chat";
-import Login from "../pages/login";
-import Store from "../pages/store";
-import Pair from "../pages/pair";
-import SetAvatar from "../pages/set-avatar";
+import Register from "./register";
+import Chat from "./chat";
+import Login from "./login";
+import Store from "./store";
+import Pair from "./pair";
+import SetAvatar from "./set-avatar";
 import NotFound from "./not-found";
 import { getLocalStorageUserString } from "../utils/untils";
 
-type privateProps = { children: ReactElement<any, any> };
+type privateProps = { children: ReactElement};
 
 const routes = () => {
   const PrivateRoute = (props: privateProps) => {

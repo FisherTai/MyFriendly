@@ -3,31 +3,26 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { BiPowerOff } from "react-icons/bi";
+
 import { logoutRoute } from "../utils/api-routes";
-import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/reducers/current-user-slice";
+import { getLocalStorageUser } from "../utils/untils";
 
-type Props = {};
-
-const Logout = (props: Props) => {
+const Logout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   const handleClick = async () => {
-    const id = await JSON.parse(
-      localStorage.getItem(strings.LOCAL_STORAGE_USER)!
-    )._id;
-    const data = await axios.get(`${logoutRoute}/${id}`, { withCredentials: true });
+    const { _id } = getLocalStorageUser()!;
+    const data = await axios.get(`${logoutRoute}/${_id}`, { withCredentials: true });
     if (data.status === 200) {
       localStorage.clear();
-      dispatch(setCurrentUser(null))
+      dispatch(setCurrentUser(null));
       navigate("/login");
     }
   };

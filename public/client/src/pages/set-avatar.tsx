@@ -1,49 +1,43 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import loader from "../assets/loader.gif";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { setAvatarRoute } from "../utils/api-routes";
+import styled from "styled-components";
 import { Buffer } from "buffer";
-import { strings } from "../config/strings";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+
+import loader from "../assets/loader.gif";
+import { setAvatarRoute } from "../utils/api-routes";
 import toastOptions from "../utils/toast-options";
 import { componentProps } from "../config/style-mode-interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { getLocalStorageUser, setLocalStorageUser } from "../utils/untils";
 
-import axios from "axios";
-type Props = {};
-
-const SetAvatar = (props: Props) => {
+const SetAvatar = () => {
   const api = `https://api.multiavatar.com/4645646`;
   const navigate = useNavigate();
   const [avatars, setAvatars] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedAvatar, setSelectedAvatar] = useState<number | undefined>(
-    undefined
-  );
-
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
+  const [selectedAvatar, setSelectedAvatar] = useState<number | undefined>(undefined);
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions());
     } else {
-      const user = await JSON.parse(
-        localStorage.getItem(strings.LOCAL_STORAGE_USER)!
+      const user = getLocalStorageUser()!;
+      const { data } = await axios.post(
+        `${setAvatarRoute}/${user._id}`,
+        {
+          image: avatars[selectedAvatar],
+        },
+        { withCredentials: true }
       );
-      const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
-        image: avatars[selectedAvatar],
-      },
-      { withCredentials: true });
-      console.log(data);
 
       if (data.data.isSet) {
         user.USER_AVATAR = data.data.image;
-        localStorage.setItem(strings.LOCAL_STORAGE_USER, JSON.stringify(user));
+        setLocalStorageUser(user);
         navigate("/");
       } else {
         toast.error("頭像設定錯誤. 請再試一次.", toastOptions());
@@ -53,18 +47,9 @@ const SetAvatar = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!localStorage.getItem(strings.LOCAL_STORAGE_USER)) navigate("/login");
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
       const data = [];
       for (let i = 0; i < 3; i++) {
-        const image = await axios.get(
-          `${api}/${Math.round(Math.random() * 1000)}`
-        );
+        const image = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
         const buffer = new Buffer(image.data);
         data.push(buffer.toString("base64"));
       }
@@ -88,17 +73,8 @@ const SetAvatar = (props: Props) => {
           <div className="avatars">
             {avatars.map((avatar, index) => {
               return (
-                <div
-                  className={`avatar ${
-                    selectedAvatar === index ? "selected" : ""
-                  }`}
-                >
-                  <img
-                    src={`data:image/svg+xml;base64,${avatar}`}
-                    alt="avatar"
-                    key={avatar}
-                    onClick={() => setSelectedAvatar(index)}
-                  />
+                <div className={`avatar ${selectedAvatar === index ? "selected" : ""}`}>
+                  <img src={`data:image/svg+xml;base64,${avatar}`} alt="avatar" key={avatar} onClick={() => setSelectedAvatar(index)} />
                 </div>
               );
             })}

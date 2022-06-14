@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import ChatInput from "./chat-input";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { sendMessageRoute, recieveMessageRoute } from "../utils/api-routes";
-import { IUser } from "../config/interface";
-import { strings } from "../config/strings";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
-import toastOptions from "../utils/toast-options"
 import { componentProps } from "../config/style-mode-interface";
+
+import { sendMessageRoute, recieveMessageRoute } from "../utils/api-routes";
+import { IUser } from "../config/interface";
+import { Socket } from "socket.io-client";
+import toastOptions from "../utils/toast-options";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { getLocalStorageUser } from "../utils/untils";
+import ChatInput from "./chat-input";
 
 type Props = {
   currentChat: IUser;
-  socket: React.MutableRefObject<
-    Socket<DefaultEventsMap, DefaultEventsMap> | undefined
-  >;
+  socket: React.MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>;
 };
 
 interface MessageType {
@@ -28,13 +27,11 @@ interface MessageType {
 }
 
 const ChatContainer = (props: Props) => {
-  const { currentChat,socket } = props;
+  const { currentChat, socket } = props;
   const [messages, setMessages] = useState<MessageType[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [arrivalMessage, setArrivalMessage] = useState<{fromSelf: boolean, message: string} | null>(null);
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
+  const [arrivalMessage, setArrivalMessage] = useState<{ fromSelf: boolean; message: string } | null>(null);
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   useEffect(() => {
     if (socket.current) {
@@ -47,26 +44,18 @@ const ChatContainer = (props: Props) => {
 
   useEffect(() => {
     async function fetchData() {
-      const myInfo = await JSON.parse(
-        localStorage.getItem(strings.LOCAL_STORAGE_USER)!
+      const myInfo = getLocalStorageUser()!;
+      const { data } = await axios.post(
+        recieveMessageRoute,
+        {
+          from: myInfo._id,
+          to: currentChat._id,
+        },
+        { withCredentials: true }
       );
-      const { data } = await axios.post(recieveMessageRoute, {
-        from: myInfo._id,
-        to: currentChat._id,
-      },
-      { withCredentials: true });
       setMessages(data.data);
     }
     fetchData();
-  }, [currentChat]);
-
-  useEffect(() => {
-    const getCurrentChat = async () => {
-      if (currentChat) {
-        await JSON.parse(localStorage.getItem(strings.LOCAL_STORAGE_USER)!)._id;
-      }
-    };
-    getCurrentChat();
   }, [currentChat]);
 
   useEffect(() => {
@@ -78,22 +67,23 @@ const ChatContainer = (props: Props) => {
   }, [messages]);
 
   const handleSendMsg = async (msg: string) => {
-    const data = await JSON.parse(
-      localStorage.getItem(strings.LOCAL_STORAGE_USER)!
-    );
+    const from = getLocalStorageUser()!;
     console.log(msg);
     socket.current!.emit("sendMsg", {
       to: currentChat._id,
-      from: data._id,
-      message:msg,
+      from: from._id,
+      message: msg,
     });
     try {
-      await axios.post(sendMessageRoute, {
-        from: data._id,
-        to: currentChat._id,
-        message: msg,
-      },
-      { withCredentials: true });
+      await axios.post(
+        sendMessageRoute,
+        {
+          from: from._id,
+          to: currentChat._id,
+          message: msg,
+        },
+        { withCredentials: true }
+      );
       const msgs = [...messages];
       msgs.push({ fromSelf: true, message: msg });
       setMessages(msgs);
@@ -108,10 +98,7 @@ const ChatContainer = (props: Props) => {
         <div className="chat-header">
           <div className="user-details">
             <div className="avatar">
-              <img
-                src={`data:image/svg+xml;base64,${currentChat.USER_AVATAR}`}
-                alt=""
-              />
+              <img src={`data:image/svg+xml;base64,${currentChat.USER_AVATAR}`} alt="" />
             </div>
             <div className="username">
               <h3>{currentChat.USER_NAME}</h3>
@@ -122,11 +109,7 @@ const ChatContainer = (props: Props) => {
           {messages.map((message) => {
             return (
               <div ref={scrollRef} key={uuidv4()}>
-                <div
-                  className={`message ${
-                    message.fromSelf ? "sended" : "recieved"
-                  }`}
-                >
+                <div className={`message ${message.fromSelf ? "sended" : "recieved"}`}>
                   <div className="content ">
                     <p>{message.message}</p>
                   </div>
@@ -204,7 +187,7 @@ const Container = styled.div<componentProps>`
     .sended {
       justify-content: flex-end;
       .content {
-        color:white;
+        color: white;
         background-color: ${({ style }) => style.chat_sended_color};
       }
     }

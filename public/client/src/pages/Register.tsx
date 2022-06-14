@@ -14,7 +14,7 @@ import toastOptions from "../utils/toast-options";
 import { componentProps } from "../config/style-mode-interface";
 import { setCurrentUser } from "../redux/reducers/current-user-slice";
 import { RootState } from "../redux/store";
-
+import { setLocalStorageUser } from "../utils/untils";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,9 +27,7 @@ const Register = () => {
     sex: "",
   });
 
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -51,10 +49,7 @@ const Register = () => {
           toast.error(data.message, toastOptions());
         } else {
           toast.success("註冊成功，即將跳轉", toastOptions());
-          localStorage.setItem(
-            strings.LOCAL_STORAGE_USER,
-            JSON.stringify(data.data)
-          );
+          setLocalStorageUser(data.data);
           setTimeout(() => {
             dispatch(setCurrentUser(data.data));
             navigate("/");
@@ -100,50 +95,18 @@ const Register = () => {
             <h1>{strings.APP_NAME}</h1>
           </div>
 
-          <input
-            type="text"
-            placeholder="用戶名"
-            name="username"
-            onChange={(event) => handleChange(event)}
-          />
+          <input type="text" placeholder="用戶名" name="username" onChange={(event) => handleChange(event)} />
 
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            onChange={(event) => handleChange(event)}
-          />
+          <input type="email" placeholder="Email" name="email" onChange={(event) => handleChange(event)} />
 
-          <input
-            type="password"
-            placeholder="密碼"
-            name="password"
-            onChange={(event) => handleChange(event)}
-          />
+          <input type="password" placeholder="密碼" name="password" onChange={(event) => handleChange(event)} />
 
-          <input
-            type="password"
-            placeholder="確認密碼"
-            name="confirmPassword"
-            onChange={(event) => handleChange(event)}
-          />
+          <input type="password" placeholder="確認密碼" name="confirmPassword" onChange={(event) => handleChange(event)} />
 
           <div className="radio_sex">
-            <input
-              type="radio"
-              id="male"
-              name="sex"
-              value="1"
-              onChange={(event) => handleChange(event)}
-            />
+            <input type="radio" id="male" name="sex" value="1" onChange={(event) => handleChange(event)} />
             <label htmlFor="male">男</label>
-            <input
-              type="radio"
-              id="female"
-              name="sex"
-              value="2"
-              onChange={(event) => handleChange(event)}
-            />
+            <input type="radio" id="female" name="sex" value="2" onChange={(event) => handleChange(event)} />
             <label htmlFor="female">女</label>
           </div>
 

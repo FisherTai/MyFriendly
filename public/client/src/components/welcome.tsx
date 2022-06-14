@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { IUser } from "../config/interface";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+
 import WelcomePic from "../assets/welcome.gif";
-import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { getLocalStorageUser } from "../utils/untils";
 
-type Props = {};
-
-const Welcome = (props: Props) => {
+const Welcome = () => {
   const [userName, setUserName] = useState<string>("");
- 
-  const variableStyle = useSelector(
-    (state: RootState) => state.styleMode.value
-  );
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
   useEffect(() => {
     async function fetchData() {
-      let username: string = await JSON.parse(
-        localStorage.getItem(strings.LOCAL_STORAGE_USER)!
-      ).USER_NAME;
+      let username: string = getLocalStorageUser()!.USER_NAME;
       setUserName(username ? username : "");
     }
     fetchData();
