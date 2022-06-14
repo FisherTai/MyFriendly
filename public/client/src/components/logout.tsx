@@ -8,10 +8,14 @@ import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../redux/reducers/current-user-slice";
+
 type Props = {};
 
 const Logout = (props: Props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const variableStyle = useSelector(
     (state: RootState) => state.styleMode.value
   );
@@ -23,11 +27,12 @@ const Logout = (props: Props) => {
     const data = await axios.get(`${logoutRoute}/${id}`, { withCredentials: true });
     if (data.status === 200) {
       localStorage.clear();
+      dispatch(setCurrentUser(null))
       navigate("/login");
     }
   };
   return (
-    <Button onClick={handleClick} style={variableStyle}>
+    <Button className="logout" onClick={handleClick} style={variableStyle}>
       <BiPowerOff />
       <p>登出</p>
     </Button>

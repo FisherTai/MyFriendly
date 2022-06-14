@@ -9,13 +9,16 @@ import axios from "axios";
 import { strings } from "../config/strings";
 import toastOptions from "../utils/toast-options";
 import { componentProps } from "../config/style-mode-interface";
+import { setCurrentUser } from "../redux/reducers/current-user-slice";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 
 type Props = {};
 
 const Register = (props: Props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [values, setValues] = useState({
     username: "",
     email: "",
@@ -39,13 +42,16 @@ const Register = (props: Props) => {
     if (handleValidation()) {
       const { email, username, password, sex } = values;
       try {
-        const { data } = await axios.post(registerRoute, {
-          username,
-          email,
-          password,
-          sex,
-        },
-        { withCredentials: true });
+        const { data } = await axios.post(
+          registerRoute,
+          {
+            username,
+            email,
+            password,
+            sex,
+          },
+          { withCredentials: true }
+        );
         console.log(data);
         if (data.code !== 200) {
           toast.error(data.message, toastOptions());
@@ -56,6 +62,7 @@ const Register = (props: Props) => {
             JSON.stringify(data.data)
           );
           setTimeout(() => {
+            dispatch(setCurrentUser(data.data));
             navigate("/");
           }, 3000);
         }

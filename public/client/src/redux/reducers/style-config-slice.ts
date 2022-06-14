@@ -4,7 +4,7 @@ import { IStyleMode, IColor } from "../../config/style-mode-interface";
 import { isDaylightMode } from "../../utils/untils";
 const colorsJstr: IStyleMode = require("../../config/style-mode.json");
 
-export interface styleConfigState {
+interface styleConfigState {
   value: IColor;
 }
 

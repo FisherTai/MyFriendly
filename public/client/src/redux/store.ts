@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import styleConfigReducer from "./reducers/style-config-slice";
+import {styleConfigReducer, currentUserReducer} from "./reducers";
 
 export const store = configureStore({
   reducer: {
     styleMode: styleConfigReducer,
+    currentUser: currentUserReducer,
   },
 });
 

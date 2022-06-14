@@ -7,8 +7,14 @@ import Logo from "../assets/logo.png";
 import { changeStyles } from "../redux/reducers/style-config-slice";
 import { isDaylightMode } from "../utils/untils";
 import { componentProps } from "../config/style-mode-interface";
+import Logout from "./logout";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { BiStore, BiLogIn, BiPowerOff, BiRegistered } from "react-icons/bi";
+import { TbFriends } from "react-icons/tb";
+import { BsFillChatSquareDotsFill } from "react-icons/bs";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 type Props = {};
 
@@ -23,6 +29,11 @@ const NavBar = (props: Props) => {
     (state: RootState) => state.styleMode.value
   );
 
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser.value
+  );
+
+
   return (
     <NavBarContainer className="side_bar" style={variableStyle}>
       <div className="brand">
@@ -30,42 +41,39 @@ const NavBar = (props: Props) => {
         <h3>{strings.APP_NAME}</h3>
       </div>
       <div className="nav">
-        <ul>
-          <li>
-            <button onClick={() => dispatch(changeStyles(isDaylightMode()))}>
-              {isDaylightMode() ? "夜間模式" : "日間模式"}
-            </button>
-          </li>
-          <li>
-            <NavLink
-              className={(navData) => setClassName(navData)}
-              to="/register"
-            >
-              註冊
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className={(navData) => setClassName(navData)} to="/login">
-              登入
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className={(navData) => setClassName(navData)} to="/store">
-              商店
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className={(navData) => setClassName(navData)} to="/pair">
-              配對
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className={(navData) => setClassName(navData)} to="/chat">
-              聊天
-            </NavLink>
-          </li>
-        </ul>
+        <button onClick={() => dispatch(changeStyles(isDaylightMode()))}>
+          {isDaylightMode() ? <MdLightMode /> : <MdDarkMode />}
+          {isDaylightMode() ? "日間" : "夜間"}
+        </button>
+
+        {!(currentUser) && <NavLink className={(navData) => setClassName(navData)} to="/register">
+          <BiRegistered />
+          註冊
+        </NavLink>}
+
+        {!(currentUser) && <NavLink className={(navData) => setClassName(navData)} to="/login">
+          <BiLogIn />
+          登入
+        </NavLink>}
+
+        <NavLink className={(navData) => setClassName(navData)} to="/store">
+          <BiStore />
+          商店
+        </NavLink>
+
+        <NavLink className={(navData) => setClassName(navData)} to="/pair">
+          <TbFriends />
+          配對
+        </NavLink>
+
+        <NavLink className={(navData) => setClassName(navData)} to="/chat">
+          <BsFillChatSquareDotsFill />
+          聊天
+        </NavLink>
+        
+        {(currentUser) && <Logout />}
       </div>
+      
       <div className="copyright">
         Copyright © FisherTai {new Date().getFullYear()}.
       </div>
@@ -83,7 +91,7 @@ const NavBarContainer = styled.div<componentProps>`
   list-style-type: none;
   padding: 1rem;
   .selected {
-    background: rgba(255, 255, 255, 0.5);
+    background-color: ${({ style }) => style.contacts_selected_color};
   }
   .brand {
     display: flex;
@@ -99,30 +107,55 @@ const NavBarContainer = styled.div<componentProps>`
     }
   }
   .nav {
-    li {
-      margin-top: 6px;
-      padding: 14px 20px;
-      width: 100%;
-      :hover {
-        border-left: 1px solid #fff;
-        box-shadow: 0 0 4px rgba(255, 255, 255, 1);
-        background: rgba(0, 0, 0, 0.5);
-      }
-    }
-    .icon {
-      color: #fff;
-      font-size: 20px;
-      padding-right: 8px;
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    width: 100%;
     //本質上NavLink會返回的是a標籤
     a {
       color: #fff;
       font-size: 1.2rem;
       text-decoration: none;
       width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+      display: block;
+      text-align: center;
+      transition: 0.2s linear;
+      padding: 10px 0;
+      :hover {
+        border-left: 1px solid #fff;
+        box-shadow: 0 0 4px rgba(255, 255, 255, 1);
+        background: rgba(0, 0, 0, 0.5);
+      }
     }
 
     button {
+      padding: 10px 10px;
+      cursor: pointer;
+      font-weight: 100;
+      text-transform: uppercase;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+
+      background-color: transparent;
+      color: #e2f3f5;
+      border: 1px solid #fff;
+      transition: 0.3s linear;
+      border-radius: 20px;
+      :hover {
+        background-color: ${({ style }) => style.contacts_selected_color};
+        color: #fff;
+      }
+    }
+
+    svg {
+      margin:0 0.5rem 0 0;
     }
   }
   .copyright {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import Logout from "./logout";
 import ChatInput from "./chat-input";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -118,7 +117,6 @@ const ChatContainer = (props: Props) => {
               <h3>{currentChat.USER_NAME}</h3>
             </div>
           </div>
-          <Logout />
         </div>
         <div className="chat-messages">
           {messages.map((message) => {

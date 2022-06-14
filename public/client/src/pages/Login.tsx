@@ -8,6 +8,8 @@ import { loginRoute } from "../utils/api-routes";
 import axios from "axios";
 import { strings } from "../config/strings";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../redux/reducers/current-user-slice";
 import { RootState } from "../redux/store";
 import { componentProps } from "../config/style-mode-interface";
 import toastOptions from "../utils/toast-options";
@@ -15,12 +17,11 @@ type Props = {};
 
 const Login = (props: Props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [values, setValues] = useState({
-    username: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    sex: "",
   });
 
   const variableStyle = useSelector(
@@ -56,6 +57,7 @@ const Login = (props: Props) => {
             JSON.stringify(data.data)
           );
           setTimeout(() => {
+            dispatch(setCurrentUser(data.data));
             navigate("/");
           }, 2000);
         }
