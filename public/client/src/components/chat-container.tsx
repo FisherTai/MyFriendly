@@ -8,7 +8,6 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { componentProps } from "../config/style-mode-interface";
 
 import { sendMessageRoute, recieveMessageRoute } from "../utils/api-routes";
-import { IUser } from "../config/interface";
 import { Socket } from "socket.io-client";
 import toastOptions from "../utils/toast-options";
 import { useSelector } from "react-redux";
@@ -17,7 +16,6 @@ import { getLocalStorageUser } from "../utils/untils";
 import ChatInput from "./chat-input";
 
 type Props = {
-  currentChat: IUser;
   socket: React.MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>;
 };
 
@@ -27,11 +25,12 @@ interface MessageType {
 }
 
 const ChatContainer = (props: Props) => {
-  const { currentChat, socket } = props;
+  const { socket } = props;
   const [messages, setMessages] = useState<MessageType[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [arrivalMessage, setArrivalMessage] = useState<{ fromSelf: boolean; message: string } | null>(null);
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
+  const currentChat = useSelector((state: RootState) => state.currentChat.value);
 
   useEffect(() => {
     if (socket.current) {
@@ -49,7 +48,7 @@ const ChatContainer = (props: Props) => {
         recieveMessageRoute,
         {
           from: myInfo._id,
-          to: currentChat._id,
+          to: currentChat!._id,
         },
         { withCredentials: true }
       );
@@ -70,7 +69,7 @@ const ChatContainer = (props: Props) => {
     const from = getLocalStorageUser()!;
     console.log(msg);
     socket.current!.emit("sendMsg", {
-      to: currentChat._id,
+      to: currentChat!._id,
       from: from._id,
       message: msg,
     });
@@ -79,7 +78,7 @@ const ChatContainer = (props: Props) => {
         sendMessageRoute,
         {
           from: from._id,
-          to: currentChat._id,
+          to: currentChat!._id,
           message: msg,
         },
         { withCredentials: true }
@@ -98,10 +97,10 @@ const ChatContainer = (props: Props) => {
         <div className="chat-header">
           <div className="user-details">
             <div className="avatar">
-              <img src={`data:image/svg+xml;base64,${currentChat.USER_AVATAR}`} alt="" />
+              <img src={`data:image/svg+xml;base64,${currentChat!.USER_AVATAR}`} alt="" />
             </div>
             <div className="username">
-              <h3>{currentChat.USER_NAME}</h3>
+              <h3>{currentChat!.USER_NAME}</h3>
             </div>
           </div>
         </div>

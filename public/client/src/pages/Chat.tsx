@@ -11,7 +11,6 @@ import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { IUser } from "../config/interface";
-import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
 import { getLocalStorageUser } from "../utils/untils";
@@ -20,10 +19,10 @@ const Chat = () => {
   const navigate = useNavigate();
   const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const [contacts, setContacts] = useState<IUser[]>([]);
-  const [currentChat, setCurrentChat] = useState<undefined | IUser>(undefined);
   const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
 
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
+  const currentChat = useSelector((state: RootState) => state.currentChat.value);
 
   useEffect(() => {
     if (currentUser) {
@@ -57,8 +56,8 @@ const Chat = () => {
     <>
       <Container style={variableStyle}>
         <div className="container">
-          <Contacts contacts={contacts} changeChat={setCurrentChat} />
-          {currentChat === undefined ? <Welcome /> : <ChatContainer currentChat={currentChat} socket={socket} />}
+          <Contacts contacts={contacts} />
+          {(currentChat === undefined || currentChat === null) ? <Welcome /> : <ChatContainer socket={socket} />}
         </div>
       </Container>
     </>

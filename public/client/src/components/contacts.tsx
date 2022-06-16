@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import Logo from "../assets/logo.png";
 import { IUser } from "../config/interface";
 import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
+import { setCurrentChat } from "../redux/reducers/current-chat-slice";
 import { RootState } from "../redux/store";
 import { getLocalStorageUser } from "../utils/untils";
 
 type Props = {
   contacts: IUser[];
-  changeChat: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 };
 
 const Contacts = (props: Props) => {
-  const { contacts, changeChat } = props;
+  const { contacts } = props;
   const [currentUserName, setCurrentUserName] = useState<string | undefined>(undefined);
   const [currentUserImage, setCurrentUserImage] = useState<string | undefined>(undefined);
   const [currentSelected, setCurrentSelected] = useState<number | undefined>(undefined);
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchData() {
@@ -32,7 +34,7 @@ const Contacts = (props: Props) => {
 
   const changeCurrentChat = (index: number, contact: IUser) => {
     setCurrentSelected(index);
-    changeChat(contact);
+    dispatch(setCurrentChat(contact))
   };
 
   return (
