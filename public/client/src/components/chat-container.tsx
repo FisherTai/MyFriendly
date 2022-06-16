@@ -28,18 +28,24 @@ const ChatContainer = (props: Props) => {
   const { socket } = props;
   const [messages, setMessages] = useState<MessageType[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [arrivalMessage, setArrivalMessage] = useState<{ fromSelf: boolean; message: string } | null>(null);
+  const [arrivalMessage, setArrivalMessage] = useState<{ fromSelf: boolean; message: string; from: string } | null>(null);
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
   const currentChat = useSelector((state: RootState) => state.currentChat.value);
 
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msgRecieve", (msg) => {
-        console.log(msg);
-        setArrivalMessage({ fromSelf: false, message: msg });
+    if (socket.current ) {
+      socket.current.on("msgRecieve", (data) => {
+        setArrivalMessage({ fromSelf: false, message: data.message ,from:data.from });
       });
     }
   }, []);
+
+  // .on內的closure會一直持續，因此將判斷房間的邏輯寫在這
+  useEffect(() => {
+    if(arrivalMessage?.from === currentChat?._id){
+      arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+    }
+  }, [arrivalMessage]);
 
   useEffect(() => {
     async function fetchData() {
@@ -58,16 +64,11 @@ const ChatContainer = (props: Props) => {
   }, [currentChat]);
 
   useEffect(() => {
-    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
-  }, [arrivalMessage]);
-
-  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSendMsg = async (msg: string) => {
     const from = getLocalStorageUser()!;
-    console.log(msg);
     socket.current!.emit("sendMsg", {
       to: currentChat!._id,
       from: from._id,

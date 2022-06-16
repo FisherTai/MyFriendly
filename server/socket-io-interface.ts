@@ -6,7 +6,7 @@ interface ISendMsg {
 }
 
 export interface ServerToClientEvents {
-  msgRecieve: (msg: string) => void;
+  msgRecieve: (msg: ISendMsg) => void;
 }
 
 export interface ClientToServerEvents {
