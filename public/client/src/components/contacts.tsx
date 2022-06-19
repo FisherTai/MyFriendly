@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { FaRegUserCircle } from "react-icons/fa";
 
 import Logo from "../assets/logo.png";
 import { IUser } from "../config/interface";
@@ -50,7 +51,7 @@ const Contacts = (props: Props) => {
               return (
                 <div key={contact._id} className={`contact ${index === currentSelected ? "selected" : ""}`} onClick={() => changeCurrentChat(index, contact)}>
                   <div className="avatar">
-                    <img src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`} alt="" />
+                  {contact.USER_AVATAR ? <img src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`} alt="" /> : <FaRegUserCircle size={50} color="white" />}
                   </div>
                   <div className="username">
                     <h3>{contact.USER_NAME}</h3>
@@ -120,8 +121,9 @@ const Container = styled.div<componentProps>`
       align-items: center;
       transition: 0.5s ease-in-out;
       .avatar {
-        img {
+        img,svg {
           height: 3rem;
+          width: 4rem;
         }
       }
       .username {

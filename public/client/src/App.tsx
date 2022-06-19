@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "./redux/reducers/current-user-slice";
-import { getLocalStorageUser } from "./utils/untils"
+
 export type privateProps = {
   children: JSX.Element;
 };

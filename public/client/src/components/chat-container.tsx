@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { componentProps } from "../config/style-mode-interface";
+import { FaRegUserCircle } from "react-icons/fa";
 
 import { sendMessageRoute, recieveMessageRoute } from "../utils/api-routes";
 import { Socket } from "socket.io-client";
@@ -98,7 +99,7 @@ const ChatContainer = (props: Props) => {
         <div className="chat-header">
           <div className="user-details">
             <div className="avatar">
-              <img src={`data:image/svg+xml;base64,${currentChat!.USER_AVATAR}`} alt="" />
+              {currentChat!.USER_AVATAR ? <img src={`data:image/svg+xml;base64,${currentChat!.USER_AVATAR}`} alt="" /> : <FaRegUserCircle size={50} color={variableStyle.text_color} />}
             </div>
             <div className="username">
               <h3>{currentChat!.USER_NAME}</h3>
@@ -144,7 +145,7 @@ const Container = styled.div<componentProps>`
       align-items: center;
       gap: 1rem;
       .avatar {
-        img {
+        img,svg {
           height: 3rem;
         }
       }
