@@ -5,7 +5,22 @@
  */
 
  interface IResultFlags {
-  [flag: string]: number;
+  SUCCESS: number;
+  PARAM_ERROR: number;
+  UNAUTHENTICATION: number;
+  USER_NOT_LOGIN: number;
+  NEED_ADMIN_PERMISSION: number;
+  USER_NOT_FOUND: number;
+  USER_EXIST: number;
+  WRONG_USER_OR_PASSWORD: number;
+  USER_TRY_GOOGLE: number;
+  USER_MONEY_ENOUGH: number;
+  PRODUCT_EXIST: number;
+  PRODUCT_NOT_FOUND: number;
+  ORDER_NOT_FOUND: number;
+  ORDER_DATA_ERROR: number;
+  MESSAGE_SEND_FAIL: number;
+  UNEXPECTED_ERROR: number;
 }
 
 export const ResultCode : IResultFlags = {
@@ -14,6 +29,7 @@ export const ResultCode : IResultFlags = {
   UNAUTHENTICATION: 401,
   USER_NOT_LOGIN: 402,
   NEED_ADMIN_PERMISSION: 403,
+  USER_NOT_FOUND: 404,
   USER_EXIST: 410,
   WRONG_USER_OR_PASSWORD: 411,
   USER_TRY_GOOGLE: 412,
@@ -36,6 +52,7 @@ const ResultCodeMessage: IResultMessage = {
   401: "權限不足",
   402: "用戶未登入",
   403: "只有管理員能進行此操作",
+  404: "未找到用戶",
   410: "用戶已存在",
   411: "錯誤的email或密碼",
   412: "請嘗試使用Google帳號登入",

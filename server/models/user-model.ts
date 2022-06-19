@@ -12,6 +12,7 @@ interface IUser {
   USER_AVATAR?: string;
   USER_POINTS?: number;
   USER_REPORT?: number;
+  USER_SUSPENDED?: number;
   _doc?: any
 }
 /**
@@ -20,6 +21,7 @@ interface IUser {
 interface IUserMethods {
   isAvatarImageSet(): boolean;
   isMale(): boolean;
+  hasSuspended(): boolean;
 }
 
 /**
@@ -66,6 +68,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     type: Number,
     default: 0,
   },
+  USER_SUSPENDED: {
+    type: Boolean,
+    default: false,
+  },
 },{
   timestamps:true,
 });
@@ -76,6 +82,10 @@ userSchema.method("isAvatarImageSet", function isAvatarImageSet() {
 
 userSchema.method("isMale", function isMale() {
   return this.USER_SEX === 1;
+});
+
+userSchema.method("hasSuspended", function isMale() {
+  return this.USER_SUSPENDED;
 });
 
 // module.exports = model<IUser, UserModel>("USER", userSchema);

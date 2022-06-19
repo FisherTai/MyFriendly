@@ -28,7 +28,9 @@ export const register = async (
       _id: user._id,
       USER_SEX: user.USER_SEX,
     };
-    const token = jwt.sign(tokenObject, process.env.SECRET!, { expiresIn: '7 day' });
+    const token = jwt.sign(tokenObject, process.env.SECRET!, {
+      expiresIn: "7 day",
+    });
 
     const maxAge = 3 * 24 * 60 * 60;
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
@@ -109,7 +111,7 @@ export const setAvatar = async (
         new ResultObject(ResultCode.SUCCESS, {
           isSet: userData.isAvatarImageSet(),
           image: userData.USER_AVATAR,
-        })  
+        })
       );
     } else {
       return resJson(res, new ResultObject(ResultCode.UNEXPECTED_ERROR));
@@ -148,8 +150,69 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
       expires: new Date(Date.now() + 1 * 1000), //重新設置過期時間
       httpOnly: true, //或是設置為false，然後在前端將其清除
     });
-    customLog("logout","logout success");
+    customLog("logout", "logout success");
     return res.send(new ResultObject(ResultCode.SUCCESS));
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await User.find().select([
+      "USER_EMAIL",
+      "USER_NAME",
+      "USER_SEX",
+      "USER_AVATAR",
+      "USER_SUSPENDED",
+      "_id",
+    ]);
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, users));
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+export const editUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { _id } = req.params;
+    const user = await User.findOneAndUpdate({ _id},req.body,{
+      new: true,
+      runValidators: true,
+    }).select([
+      "USER_EMAIL",
+      "USER_NAME",
+      "USER_SEX",
+      "USER_AVATAR",
+      "USER_SUSPENDED",
+      "_id",
+    ]);
+    if(!user){
+      return resJson(res, new ResultObject(ResultCode.USER_NOT_FOUND));
+    }
+    return resJson(res, new ResultObject(ResultCode.SUCCESS,user));
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+
+export const suspendUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { _id } = req.params;
+    const { USER_SUSPENDED } = req.body;
+    const user = await User.findOneAndUpdate({ _id},USER_SUSPENDED,{
+      new: true,
+      runValidators: true,
+    }).select([
+      "USER_EMAIL",
+      "USER_SUSPENDED",
+      "_id",
+    ]);
+    if(!user){
+      return resJson(res, new ResultObject(ResultCode.USER_NOT_FOUND));
+    }
+    return resJson(res, new ResultObject(ResultCode.SUCCESS,user));
   } catch (ex) {
     next(ex);
   }
