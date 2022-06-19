@@ -5,7 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { FaRegUserCircle } from "react-icons/fa";
 
-import { getAllUsersRoute } from "../utils/api-routes";
+import { getAllUsersExIdRoute } from "../utils/api-routes";
 import { IUser } from "../config/interface";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
@@ -25,7 +25,7 @@ const Pair = () => {
     async function fetchData() {
       if (currentUser) {
         if (currentUser.USER_AVATAR) {
-          const { data } = await axios.get(`${getAllUsersRoute}/${currentUser._id}`, { withCredentials: true });
+          const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
           setContacts(data.data);
         } else {
           navigate("/setAvatar");

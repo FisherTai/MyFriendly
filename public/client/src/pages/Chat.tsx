@@ -5,7 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { io, Socket } from "socket.io-client";
 
-import { getAllUsersRoute, host } from "../utils/api-routes";
+import { getAllUsersExIdRoute, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
@@ -42,7 +42,7 @@ const Chat = () => {
     async function fetchData() {
       if (currentUser) {
         if (currentUser.USER_AVATAR) {
-          const { data } = await axios.get(`${getAllUsersRoute}/${currentUser._id}`, { withCredentials: true });
+          const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
           setContacts(data.data);
         } else {
           navigate("/setAvatar");

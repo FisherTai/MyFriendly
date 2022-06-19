@@ -119,7 +119,7 @@ export const setAvatar = async (
   }
 };
 
-export const getAllUsers = async (
+export const getAllUsersExId = async (
   req: Request,
   res: Response,
   next: NextFunction
