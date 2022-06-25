@@ -3,8 +3,8 @@ import cors from "cors";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import userRoutes from "./routes/user-route";
-import messageRoutes from "./routes/message-route";
+import { invitationRoutes, userRoutes, messageRoutes }  from "./routes/";
+
 import { Server } from "socket.io";
 import {
   ServerToClientEvents,
@@ -27,6 +27,8 @@ app.use(express.json());
 
 app.use("/api/auth", userRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/invite", invitationRoutes);
+
 
 // mongoose 6以後不再需要設定useNewUrlParser跟useUnifiedTopology為true
 connect(process.env.MONGO_DB_LOCAL!)
