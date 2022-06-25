@@ -1,9 +1,9 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
 
 /**
  * Create an interface representing a document in MongoDB.
  */
-interface IUser {
+export interface IUser {
   _id: string;
   USER_NAME: string;
   USER_EMAIL: string;
@@ -13,6 +13,8 @@ interface IUser {
   USER_POINTS?: number;
   USER_REPORT?: number;
   USER_SUSPENDED?: number;
+  USER_CONCATS?:Types.ObjectId[];
+  USER_INVITATION?:Types.ObjectId[];
   _doc?: any
 }
 /**
@@ -72,6 +74,18 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     type: Boolean,
     default: false,
   },
+  USER_CONCATS: [
+    {
+      type: Schema.Types.ObjectId, 
+      ref: 'USER'
+    }
+  ],
+  USER_INVITATION:[
+    {
+      type: Schema.Types.ObjectId, 
+      ref: 'INVITE'
+    }
+  ]
 },{
   timestamps:true,
 });

@@ -13,7 +13,6 @@ export const checkUser = async (
 ) => {
   try {
     const token: string = req.cookies.jwt;
-    console.log(token);
     if (token) {
       const decoded = verify(token, process.env.SECRET!);
       const tokenObj = decoded as TokenObj;

@@ -1,4 +1,4 @@
-import mongoose, { Model, Schema, model,Types } from "mongoose";
+import { Model, Schema, model,Types } from "mongoose";
 
 /**
  * Create an interface representing a document in MongoDB.
@@ -6,7 +6,7 @@ import mongoose, { Model, Schema, model,Types } from "mongoose";
 interface IMessage {
   message: {text: string};
   users: Types.Array<string>;
-  sender: mongoose.Schema.Types.ObjectId;
+  sender: Schema.Types.ObjectId;
 }
 /**
  * Put all user instance methods in this interface:
@@ -30,7 +30,7 @@ const messageSchema = new Schema<IMessage, MessageModel,IMessageMethods>(
     },
     users: Array,
     sender: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "USER",
       required: true,
     },

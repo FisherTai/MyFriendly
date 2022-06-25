@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { ResultObject, ResultCode } from "../result-creator";
 import jwt from "jsonwebtoken";
-import User from "../models/user-model";
+import User, { IUser } from "../models/user-model";
 
 export const register = async (
   req: Request,
@@ -157,6 +157,32 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const getUserConcats = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { _id } = req.params;
+    if (!_id)
+    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    const users = await User.findOne({ _id }).populate<{ USER_CONCATS: IUser[] }>('USER_CONCATS','USER_NAME USER_AVATAR').orFail().select(['USER_CONCATS']);
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, users!));
+  } catch (ex) {
+    next(ex);
+  }
+}
+
+export const addConcats = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { _id } = req.params;
+    const objectId:string = req.body.objectId;
+    if (!_id || !objectId){
+      return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    }
+    const users = await User.findOneAndUpdate({ _id }, { $push: { USER_CONCATS : [ objectId ] } });
+    return resJson(res, new ResultObject(ResultCode.SUCCESS));
+  } catch (ex) {
+    next(ex);
+  }
+}
+
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await User.find().select([
@@ -165,6 +191,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
       "USER_SEX",
       "USER_AVATAR",
       "USER_SUSPENDED",
+      "USER_CONCATS",
       "_id",
     ]);
     return resJson(res, new ResultObject(ResultCode.SUCCESS, users));
