@@ -20,7 +20,8 @@
     "contacts_myinfo": "#000040",
     "contacts_text_color": "white",
     "border_color": "#00000020",
-    "nav_bar_color":"#0d0d30"
+    "nav_bar_color":"#0d0d30",
+    "reverse_background_color":"#960ac450"
   },
   "night": {
     "main_color": "#131324",
@@ -43,6 +44,7 @@
     "contacts_myinfo": "#0d0d30",
     "contacts_text_color": "white",
     "border_color": "#FFFFFF20",
-    "nav_bar_color":"#0f0f0f"
+    "nav_bar_color":"#0f0f0f",
+    "reverse_background_color":"#ffffff30"
   }
 }

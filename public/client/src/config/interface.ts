@@ -7,3 +7,11 @@ export interface IUser {
   USER_AVATAR: string;
   JWT: string;
 };
+
+
+export interface Invite {
+  RECEIVER:string;
+  SENDER:string;
+  STATE: number;
+  _id:string;
+}

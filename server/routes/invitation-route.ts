@@ -6,7 +6,7 @@ const router = Router();
 
 /** for front end */
 router.use(checkUser);
-router.post("/:receiverId", sendInvite);
+router.post("/", sendInvite);
 /** change state */
 router.patch("/:_id", setInviteState);
 /** get sended invities by token id */

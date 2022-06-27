@@ -4,18 +4,22 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import styled from "styled-components";
 import { FaRegUserCircle } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { getAllUsersExIdRoute } from "../utils/api-routes";
-import { IUser } from "../config/interface";
+
+import { getAllUsersExIdRoute, inviteRoute, getSelfSendedInvities, } from "../utils/api-routes";
+import { IUser, Invite} from "../config/interface";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
-
+import toastOptions from "../utils/toast-options";
 
 const Pair = () => {
   const navigate = useNavigate();
 
   const [contacts, setContacts] = useState<IUser[]>([]);
-  const [invitedList, setInvitedList] = useState<number[]>([]);
+  const [invitedList, setInvitedList] = useState<number[]>([]); //當下頁面的已傳送邀請列表索引
+  const [invitedIdList, setInvitedIdList] = useState<string[]>([]); //接口返回的已傳送邀請用戶id
 
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
 
@@ -26,6 +30,16 @@ const Pair = () => {
       if (currentUser) {
         if (currentUser.USER_AVATAR) {
           const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
+          //將接口返回的清單放入useState
+          const sendedInvitedList:Invite[] = await (await axios.get(getSelfSendedInvities, { withCredentials: true })).data.data;
+          if(sendedInvitedList && sendedInvitedList.length !== 0){
+            const userIdList:string[] = [];
+            sendedInvitedList.map((invite) => {
+              userIdList.push(invite.RECEIVER)
+            })
+            setInvitedIdList(userIdList);
+          }
+
           setContacts(data.data);
         } else {
           navigate("/setAvatar");
@@ -35,14 +49,21 @@ const Pair = () => {
     fetchData();
   }, [currentUser, navigate]);
 
-  const sendInvitation = (index: number, contact: IUser) => {
-    if (invitedList.includes(index)) {
+  const sendInvitation = async (index: number, contact: IUser) => {
+    if (invitedList.includes(index) || invitedIdList.includes(contact._id)) {
       return;
     }
+    const result = await (await axios.post(inviteRoute,{receiverId: contact._id,}, { withCredentials: true })).data;
+    if(result.code !== 200) {
+      toast.error(result.message, toastOptions());
+      return;
+    }
+    setInvitedIdList([...invitedIdList, result.data]);
     setInvitedList([...invitedList, index]);
   };
 
   return (
+    <>
     <Container style={variableStyle}>
       <div className="brand">
         <h1>選擇對象送出邀請</h1>
@@ -52,12 +73,12 @@ const Pair = () => {
           return (
             <div key={contact._id} className={`contact`}>
               <div className="avatar">
-                {contact.USER_AVATAR ? <img src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`} alt="" /> : <FaRegUserCircle size={70} color="white" />}
+                {contact.USER_AVATAR ? <img src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`} alt="" /> : <FaRegUserCircle size={70} color={variableStyle.text_color} />}
               </div>
               <div className="username">
                 <h3>{contact.USER_NAME}</h3>
               </div>
-              <button className={`invite ${invitedList.includes(index) ? "selected" : ""}`} onClick={() => sendInvitation(index, contact)}>
+              <button className={`invite ${(invitedList.includes(index)) || invitedIdList.includes(contact._id) ? "sended" : ""}`} onClick={() => sendInvitation(index, contact)}>
                 邀請
               </button>
             </div>
@@ -65,6 +86,8 @@ const Pair = () => {
         })}
       </div>
     </Container>
+    <ToastContainer />
+    </>
   );
 };
 
@@ -74,7 +97,7 @@ const Container = styled.div<componentProps>`
   grid-template-rows: 10% 90%;
   overflow: hidden;
   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
-  background-color: ${({ style }) => style.contacts_color};
+  background-color: ${({ style }) => style.main_color};
 
   .brand {
     display: flex;
@@ -82,7 +105,7 @@ const Container = styled.div<componentProps>`
     gap: 1rem;
     justify-content: center;
     h1 {
-      color: ${({ style }) => style.contacts_text_color};
+      color: ${({ style }) => style.text_color};
       text-transform: uppercase;
     }
   }
@@ -103,7 +126,7 @@ const Container = styled.div<componentProps>`
       }
     }
     .contact {
-      background-color: #ffffff34;
+      background-color: ${({ style }) => style.reverse_background_color};
       min-height: 20%;
       min-width: 15%;
       width: 15%;
@@ -121,7 +144,7 @@ const Container = styled.div<componentProps>`
       }
       .username {
         h3 {
-          color: ${({ style }) => style.contacts_text_color};
+          color: ${({ style }) => style.text_color};
         }
       }
       .invite {
@@ -140,7 +163,7 @@ const Container = styled.div<componentProps>`
           padding: 0.7rem 1.5rem;
         }
       }
-      .selected {
+      .sended {
         background-color: #7a7a7a;
         :hover {
           padding: 0.5rem 1.2rem;

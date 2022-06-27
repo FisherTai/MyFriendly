@@ -9,10 +9,10 @@ interface TokenObj {
 
 export const sendInvite = async (req: Request, res: Response, next: NextFunction) => {
   //傳送對象ID
-  const { receiverId } = req.params;
+  const { receiverId } = req.body;
   try {
     const token: string = req.cookies.jwt;
-    if (token) {
+    if (token && receiverId) {
       const decoded = verify(token, process.env.SECRET!);
       const tokenObj = decoded as TokenObj;
       Invitation.create({

@@ -8,3 +8,15 @@ export const getAllUsersExIdRoute = `${host}/api/auth/allUsersExceptId`;
 
 export const sendMessageRoute = `${host}/api/messages/addmsg`;
 export const recieveMessageRoute = `${host}/api/messages/getmsg`;
+
+/**
+ * POST: send invite
+ * @param receiverId : string the receiver ID 
+ * 
+ * PATCH: change invite state
+ * /:_id
+ */
+export const inviteRoute = `${host}/api/invite`;
+
+export const getSelfSendedInvities = `${host}/api/invite/getInvitiesBySender`;
+export const getSelfReceivedInvities = `${host}/api/invite/getInvitiesByReceiver`;

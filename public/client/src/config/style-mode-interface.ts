@@ -21,6 +21,7 @@ export interface IColor {
   border_color:string;
   contacts_text_color:string;
   nav_bar_color:string;
+  reverse_background_color:string;
 }
 
 export interface IStyleMode {
