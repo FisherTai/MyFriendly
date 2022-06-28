@@ -1,4 +1,4 @@
-import User from "../models/user-model";
+import { User } from "../models";
 import { verify } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 

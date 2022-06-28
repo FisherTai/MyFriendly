@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { ResultObject, ResultCode } from "../result-creator";
-import Invitation from "../models/invitation-model";
 import { verify } from "jsonwebtoken";
 
 interface TokenObj {
   _id: string;
 }
+import { ResultObject, ResultCode } from "../result-creator";
+import { Invitation, User } from "../models/";
 
 export const sendInvite = async (req: Request, res: Response, next: NextFunction) => {
   //傳送對象ID

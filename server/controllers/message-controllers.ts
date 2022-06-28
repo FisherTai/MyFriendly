@@ -1,4 +1,4 @@
-import Messages from "../models/message-model";
+import { Messages } from "../models";
 import { Request, Response, NextFunction } from "express";
 import { ResultObject, ResultCode } from "../result-creator";
 
