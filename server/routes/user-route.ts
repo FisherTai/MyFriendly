@@ -13,6 +13,7 @@ import {
   getUserConcats,
   addConcats
 } from "../controllers/user-controllers";
+import { checkUser } from "../middlewares/authMiddleware";
 
 /* for front end */
 router.post("/register", register);
@@ -23,8 +24,9 @@ router.get("/allUsersExceptId/:id", getAllUsersExId);
 router.get("/logout/:id", logout);
 
 /** Concats */
-router.get("/getUserConcats/:_id", getUserConcats);
-router.post("/addUserConcats/:_id", addConcats);
+router.use(checkUser);
+router.get("/getUserConcats/", getUserConcats);
+router.post("/addUserConcats/", addConcats);
 
 
 /* for back end */

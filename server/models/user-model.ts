@@ -77,7 +77,8 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
   USER_CONCATS: [
     {
       type: Schema.Types.ObjectId, 
-      ref: 'USER'
+      ref: 'USER',
+      unique: true,
     }
   ],
   USER_INVITATION:[
