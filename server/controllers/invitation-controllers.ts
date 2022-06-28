@@ -1,22 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import { verify } from "jsonwebtoken";
 
-interface TokenObj {
-  _id: string;
-}
 import { ResultObject, ResultCode } from "../result-creator";
 import { Invitation, User } from "../models/";
+import { getTokenId } from "../utils/auth-util";
 
 export const sendInvite = async (req: Request, res: Response, next: NextFunction) => {
   //傳送對象ID
   const { receiverId } = req.body;
   try {
-    const token: string = req.cookies.jwt;
-    if (token && receiverId) {
-      const decoded = verify(token, process.env.SECRET!);
-      const tokenObj = decoded as TokenObj;
+    const tokenId: string | null = getTokenId(req,res);
+    if (tokenId && receiverId) {
       Invitation.create({
-        SENDER: tokenObj._id,
+        SENDER: tokenId,
         RECEIVER: receiverId,
       });
       return resJson(res, new ResultObject(ResultCode.SUCCESS));
@@ -46,14 +41,9 @@ export const setInviteState = async (req: Request, res: Response, next: NextFunc
 
 export const getSelfSendedInvities = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token: string = req.cookies.jwt;
-    if (token) {
-      const decoded = verify(token, process.env.SECRET!);
-      const tokenObj = decoded as TokenObj;
-      const Invites = await Invitation.find({ SENDER: tokenObj._id });
-      return resJson(res, new ResultObject(ResultCode.SUCCESS, Invites));
-    }
-    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    const tokenId: string | null = getTokenId(req,res);
+    const Invites = await Invitation.find({ SENDER: tokenId });
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, Invites));
   } catch (ex) {
     next(ex);
   }
@@ -61,14 +51,9 @@ export const getSelfSendedInvities = async (req: Request, res: Response, next: N
 
 export const getSelfReceivedInvities = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token: string = req.cookies.jwt;
-    if (token) {
-      const decoded = verify(token, process.env.SECRET!);
-      const tokenObj = decoded as TokenObj;
-      const Invites = await Invitation.find({ RECEIVER: tokenObj._id });
-      return resJson(res, new ResultObject(ResultCode.SUCCESS, Invites));
-    }
-    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    const tokenId: string | null = getTokenId(req,res);
+    const Invites = await Invitation.find({ RECEIVER: tokenId });
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, Invites));
   } catch (ex) {
     next(ex);
   }

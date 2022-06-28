@@ -1,8 +1,10 @@
 import { User } from "../models";
 import { verify } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { getTokenId } from "../utils/auth-util";
+import { ResultObject, ResultCode } from "../result-creator";
 
-interface TokenObj {
+export interface TokenObj {
   _id: string;
 }
 
@@ -12,21 +14,19 @@ export const checkUser = async (
   next: NextFunction
 ) => {
   try {
-    const token: string = req.cookies.jwt;
-    if (token) {
-      const decoded = verify(token, process.env.SECRET!);
-      const tokenObj = decoded as TokenObj;
-      const user = await User.findById(tokenObj._id);
+    const tokenId = getTokenId(req, res);
+    if (tokenId) {
+      const user = await User.findById(tokenId);
       if (user) {
         customLog("checkUser", "驗證成功");
         next();
       } else {
-        res.status(401).send({ status: false });
+        res.status(401).send(new ResultObject(ResultCode.PARAM_ERROR));
       }
     } else {
-      res.status(401).send({ status: false });
+      res.status(401).send(new ResultObject(ResultCode.USER_NOT_LOGIN));
     }
   } catch (err) {
-    res.status(401).send({ status: false });
+    res.status(401).send(new ResultObject(ResultCode.PARAM_ERROR));
   }
 };

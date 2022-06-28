@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
-import { ResultObject, ResultCode } from "../result-creator";
 import jwt from "jsonwebtoken";
+
+import { ResultObject, ResultCode } from "../result-creator";
 import User, { IUser } from "../models/user-model";
+import { getTokenId } from "../utils/auth-util";
 
 export const register = async (
   req: Request,
@@ -159,11 +161,12 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 
 export const getUserConcats = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { _id } = req.params;
-    if (!_id)
-    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
-    const users = await User.findOne({ _id }).populate<{ USER_CONCATS: IUser[] }>('USER_CONCATS','USER_NAME USER_AVATAR').orFail().select(['USER_CONCATS']);
-    return resJson(res, new ResultObject(ResultCode.SUCCESS, users!));
+    const tokenId: string | null = getTokenId(req,res);
+    if (tokenId) {
+      const users = await User.findOne({ _id:tokenId }).populate<{ USER_CONCATS: IUser[] }>('USER_CONCATS','USER_NAME USER_AVATAR').orFail().select(['USER_CONCATS']).orFail();
+      return resJson(res, new ResultObject(ResultCode.SUCCESS, users));
+    }
+    return resJson(res, new ResultObject(ResultCode.USER_NOT_LOGIN));
   } catch (ex) {
     next(ex);
   }
@@ -171,13 +174,15 @@ export const getUserConcats = async (req: Request, res: Response, next: NextFunc
 
 export const addConcats = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { _id } = req.params;
-    const objectId:string = req.body.objectId;
-    if (!_id || !objectId){
-      return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+    const tokenId: string | null = getTokenId(req,res);
+    if (tokenId) {
+      const receiverId:string = req.body.receiverId;
+      if (receiverId){
+        await User.findOneAndUpdate({ _id:tokenId }, { $push: { USER_CONCATS : [ receiverId ] } }).orFail();
+        return resJson(res, new ResultObject(ResultCode.SUCCESS));
+      }
     }
-    const users = await User.findOneAndUpdate({ _id }, { $push: { USER_CONCATS : [ objectId ] } });
-    return resJson(res, new ResultObject(ResultCode.SUCCESS));
+    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
   } catch (ex) {
     next(ex);
   }
