@@ -46,7 +46,7 @@ const ChatContainer = (props: Props) => {
     if(arrivalMessage?.from === currentChat?._id){
       arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
     }
-  }, [arrivalMessage]);
+  }, [arrivalMessage, currentChat?._id]);
 
   useEffect(() => {
     async function fetchData() {

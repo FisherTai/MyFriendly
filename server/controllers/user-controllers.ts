@@ -163,8 +163,8 @@ export const getUserConcats = async (req: Request, res: Response, next: NextFunc
   try {
     const tokenId: string | null = getTokenId(req,res);
     if (tokenId) {
-      const users = await User.findOne({ _id:tokenId }).populate<{ USER_CONCATS: IUser[] }>('USER_CONCATS','USER_NAME USER_AVATAR').orFail().select(['USER_CONCATS']).orFail();
-      return resJson(res, new ResultObject(ResultCode.SUCCESS, users));
+      const user = await User.findOne({ _id:tokenId }).populate<{ USER_CONCATS: IUser[] }>('USER_CONCATS','USER_NAME USER_AVATAR').orFail().select(['USER_CONCATS']).orFail();
+      return resJson(res, new ResultObject(ResultCode.SUCCESS, user.USER_CONCATS));
     }
     return resJson(res, new ResultObject(ResultCode.USER_NOT_LOGIN));
   } catch (ex) {

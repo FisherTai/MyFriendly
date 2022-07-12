@@ -4,6 +4,9 @@ import { IStyleMode, IColor } from "../../config/style-mode-interface";
 import { isDaylightMode } from "../../utils/untils";
 const colorsJstr: IStyleMode = require("../../config/style-mode.json");
 
+/**
+ * 日夜模式的顏色
+ */
 interface styleConfigState {
   value: IColor;
 }

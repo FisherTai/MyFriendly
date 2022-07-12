@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../../config/interface";
 
+/**當前聊天的房間 */
 interface currentChatState {
   value: IUser | null;
 }

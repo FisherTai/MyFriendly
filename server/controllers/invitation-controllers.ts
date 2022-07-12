@@ -2,13 +2,14 @@ import { Request, Response, NextFunction } from "express";
 
 import { ResultObject, ResultCode } from "../result-creator";
 import { Invitation, User } from "../models/";
+import { IUser } from "../models/user-model";
 import { getTokenId } from "../utils/auth-util";
 
 export const sendInvite = async (req: Request, res: Response, next: NextFunction) => {
   //傳送對象ID
   const { receiverId } = req.body;
   try {
-    const tokenId: string | null = getTokenId(req,res);
+    const tokenId: string | null = getTokenId(req, res);
     if (tokenId && receiverId) {
       Invitation.create({
         SENDER: tokenId,
@@ -39,7 +40,6 @@ export const setInviteState = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-
 export const approveInvite = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { _id } = req.params;
@@ -55,9 +55,9 @@ export const approveInvite = async (req: Request, res: Response, next: NextFunct
       }
     ).orFail();
 
-    //加入通訊錄  
-    const tokenId: string | null = getTokenId(req,res);
-    await User.findOneAndUpdate({ _id: tokenId}, { $push: { USER_CONCATS : [ invite.SENDER ] } }).orFail();
+    //加入通訊錄
+    const tokenId: string | null = getTokenId(req, res);
+    await User.findOneAndUpdate({ _id: tokenId }, { $push: { USER_CONCATS: [invite.SENDER] } }).orFail();
     return resJson(res, new ResultObject(ResultCode.SUCCESS));
   } catch (ex) {
     next(ex);
@@ -84,10 +84,9 @@ export const rejectInvite = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-
 export const getSelfSendedInvities = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const tokenId: string | null = getTokenId(req,res);
+    const tokenId: string | null = getTokenId(req, res);
     const Invites = await Invitation.find({ SENDER: tokenId });
     return resJson(res, new ResultObject(ResultCode.SUCCESS, Invites));
   } catch (ex) {
@@ -97,8 +96,8 @@ export const getSelfSendedInvities = async (req: Request, res: Response, next: N
 
 export const getSelfReceivedInvities = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const tokenId: string | null = getTokenId(req,res);
-    const Invites = await Invitation.find({ RECEIVER: tokenId });
+    const tokenId: string | null = getTokenId(req, res);
+    const Invites = await Invitation.find({ RECEIVER: tokenId, STATE: 3 }).populate<{ SENDER: IUser }>("SENDER", "USER_NAME USER_AVATAR");
     return resJson(res, new ResultObject(ResultCode.SUCCESS, Invites));
   } catch (ex) {
     next(ex);

@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { styleConfigReducer, currentUserReducer, currentChatReducer } from "./reducers";
+import { styleConfigReducer, currentUserReducer, currentChatReducer, chatContactsTabReducer } from "./reducers";
 
 export const store = configureStore({
   reducer: {
     styleMode: styleConfigReducer,
     currentUser: currentUserReducer,
     currentChat: currentChatReducer,
+    chatContactsTab: chatContactsTabReducer,
   },
 });
 

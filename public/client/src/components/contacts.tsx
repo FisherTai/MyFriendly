@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import styled from "styled-components";
-import { FaRegUserCircle } from "react-icons/fa";
 
+import styled from "styled-components";
+
+import ContactsItem from "./contacts-item";
 import Logo from "../assets/logo.png";
-import { IUser } from "../config/interface";
+import { IUser, Invite } from "../config/interface";
 import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
-import { setCurrentChat } from "../redux/reducers/current-chat-slice";
 import { RootState } from "../redux/store";
 import { getLocalStorageUser } from "../utils/untils";
+import { setContactsTab } from "../redux/reducers/chat-contacts-tab-slice";
+import { Flags } from "../utils/untils";
 
 type Props = {
   contacts: IUser[];
 };
+
+const TAB_CURRENT = "currentTab";
 
 const Contacts = (props: Props) => {
   const { contacts } = props;
   const [currentUserName, setCurrentUserName] = useState<string | undefined>(undefined);
   const [currentUserImage, setCurrentUserImage] = useState<string | undefined>(undefined);
   const [currentSelected, setCurrentSelected] = useState<number | undefined>(undefined);
-  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
   const dispatch = useDispatch();
+
+  const variableStyle = useSelector((state: RootState) => state.styleMode.value);
+  const currentTab = useSelector((state: RootState) => state.chatContactsTab.value);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,11 +39,6 @@ const Contacts = (props: Props) => {
     fetchData();
   }, []);
 
-  const changeCurrentChat = (index: number, contact: IUser) => {
-    setCurrentSelected(index);
-    dispatch(setCurrentChat(contact))
-  };
-
   return (
     <>
       {currentUserImage && currentUserName && (
@@ -46,17 +47,23 @@ const Contacts = (props: Props) => {
             <img src={Logo} alt="logo" />
             <h3>{strings.APP_NAME}</h3>
           </div>
+          <nav>
+            <ul>
+              <li className={`contact ${Flags.TAB_CONTACT === currentTab ? TAB_CURRENT : ""}`}>
+                <input type="button" value="聯絡人" onClick={() => dispatch(setContactsTab(Flags.TAB_CONTACT))} />
+              </li>
+              {/* <li className={`contact ${Flags.TAB_SENDED === currentTab ? TAB_CURRENT : ""}`}>
+                <input type="button" value="邀請" onClick={() => dispatch(setContactsTab(Flags.TAB_SENDED))} />
+              </li> */}
+              <li className={`contact ${Flags.TAB_REVICED === currentTab ? TAB_CURRENT : ""}`}>
+                <input type="button" value="收到邀請" onClick={() => dispatch(setContactsTab(Flags.TAB_REVICED))} />
+              </li>
+            </ul>
+          </nav>
           <div className="contacts">
             {contacts.map((contact, index) => {
               return (
-                <div key={contact._id} className={`contact ${index === currentSelected ? "selected" : ""}`} onClick={() => changeCurrentChat(index, contact)}>
-                  <div className="avatar">
-                  {contact.USER_AVATAR ? <img src={`data:image/svg+xml;base64,${contact.USER_AVATAR}`} alt="" /> : <FaRegUserCircle size={50} color="white" />}
-                  </div>
-                  <div className="username">
-                    <h3>{contact.USER_NAME}</h3>
-                  </div>
-                </div>
+                <ContactsItem key={contact._id} contact={contact} index={index} currentSelected={currentSelected} setCurrentSelected={setCurrentSelected} />
               );
             })}
           </div>
@@ -77,7 +84,7 @@ const Contacts = (props: Props) => {
 const Container = styled.div<componentProps>`
   display: grid;
   margin: 0 0.2rem 0 0;
-  grid-template-rows: 10% 75% 15%;
+  grid-template-rows: 10% 10% 65% 15%;
   overflow: hidden;
   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
   background-color: ${({ style }) => style.contacts_color};
@@ -95,6 +102,41 @@ const Container = styled.div<componentProps>`
       text-transform: uppercase;
     }
   }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    background-color: #333;
+    ul {
+      li {
+        list-style: none;
+        display: inline-block;
+        padding: 0 20px;
+        transition: 0.2s linear;
+        :hover {
+          box-shadow: 0 0 4px rgba(255, 255, 255, 1);
+        }
+      }
+      input {
+        font-size: 1rem;
+        color: #fff;
+        background-color: transparent;
+        border: none;
+        display: block;
+        padding: 10px 0;
+        cursor: pointer;
+      }
+      .currentTab {
+        background-color: #ffffff20;
+        :hover {
+        }
+      }
+    }
+  }
+
   .contacts {
     display: flex;
     flex-direction: column;
@@ -121,7 +163,8 @@ const Container = styled.div<componentProps>`
       align-items: center;
       transition: 0.5s ease-in-out;
       .avatar {
-        img,svg {
+        img,
+        svg {
           height: 3rem;
           width: 4rem;
         }
@@ -129,6 +172,24 @@ const Container = styled.div<componentProps>`
       .username {
         h3 {
           color: ${({ style }) => style.contacts_text_color};
+        }
+      }
+      .invite {
+        button {
+          padding: 3px 3px;
+          margin: 0.2rem 0.1rem;
+          cursor: pointer;
+          font-weight: 400;
+          text-transform: uppercase;
+          border: none;
+          outline: none;
+          font-size: 1.3rem;
+          border-radius: 6px;
+          background-color: #17b978;
+          color: #fff;
+        }
+        .reject {
+          background-color: red;
         }
       }
     }

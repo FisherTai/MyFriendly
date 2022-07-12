@@ -5,15 +5,15 @@ import axios from "axios";
 import styled from "styled-components";
 import { io, Socket } from "socket.io-client";
 
-import { getAllUsersExIdRoute, host } from "../utils/api-routes";
+import { getUserConcats, getAllUsersExIdRoute, getMyReceiveInvite, getMySendInvite, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
-import { IUser } from "../config/interface";
+import { IUser, ExpendInvite } from "../config/interface";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
-import { getLocalStorageUser } from "../utils/untils";
+import { getLocalStorageUser, Flags } from "../utils/untils";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ const Chat = () => {
 
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
   const currentChat = useSelector((state: RootState) => state.currentChat.value);
+  const contactsTab = useSelector((state: RootState) => state.chatContactsTab.value);
 
   useEffect(() => {
     if (currentUser) {
@@ -42,22 +43,39 @@ const Chat = () => {
     async function fetchData() {
       if (currentUser) {
         if (currentUser.USER_AVATAR) {
-          const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
-          setContacts(data.data);
+          switch (contactsTab) {
+            case Flags.TAB_REVICED:
+              const revicedList = await (await axios.get(`${getMyReceiveInvite}`, { withCredentials: true })).data;
+              const ListExpend: ExpendInvite[] = revicedList.data;
+              //轉換成通訊欄可用的資料格式
+              const mergeContacts: IUser[] = ListExpend.map((invite) => {
+                const user:IUser = invite.SENDER;
+                user.invite_id = invite._id;
+                return user;
+              });
+
+              setContacts(mergeContacts);
+              break;
+            default:
+              const { data } = await axios.get(`${getUserConcats}`, { withCredentials: true });
+              // const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
+              setContacts(data.data);
+              break;
+          }
         } else {
           navigate("/setAvatar");
         }
       }
     }
     fetchData();
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, contactsTab]);
 
   return (
     <>
       <Container style={variableStyle}>
         <div className="container">
           <Contacts contacts={contacts} />
-          {(currentChat === undefined || currentChat === null) ? <Welcome /> : <ChatContainer socket={socket} />}
+          {currentChat === undefined || currentChat === null ? <Welcome /> : <ChatContainer socket={socket} />}
         </div>
       </Container>
     </>
