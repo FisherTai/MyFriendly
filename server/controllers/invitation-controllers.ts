@@ -4,6 +4,7 @@ import { ResultObject, ResultCode } from "../result-creator";
 import { Invitation, User } from "../models/";
 import { IUser } from "../models/user-model";
 import { getTokenId } from "../utils/auth-util";
+// import { ClientSession } from "mongodb";
 
 export const sendInvite = async (req: Request, res: Response, next: NextFunction) => {
   //傳送對象ID
@@ -40,12 +41,16 @@ export const setInviteState = async (req: Request, res: Response, next: NextFunc
   }
 };
 
+/** TODO:預計要用到Transaction，但副本集的環境還沒處理好.... */
 export const approveInvite = async (req: Request, res: Response, next: NextFunction) => {
+  const { _id } = req.params;
+  if (!_id) {
+    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+  }
+  // const mongoSession = await User.startSession();
+  // mongoSession.startTransaction();
+
   try {
-    const { _id } = req.params;
-    if (!_id) {
-      return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
-    }
     const invite = await Invitation.findOneAndUpdate(
       { _id },
       { STATE: 1 },
@@ -53,14 +58,32 @@ export const approveInvite = async (req: Request, res: Response, next: NextFunct
         new: true,
         runValidators: true,
       }
-    ).orFail();
+    )
+      .orFail()
+      // .session(mongoSession)
+      .exec();
 
-    //加入通訊錄
+    // 加入通訊錄
     const tokenId: string | null = getTokenId(req, res);
-    await User.findOneAndUpdate({ _id: tokenId }, { $push: { USER_CONCATS: [invite.SENDER] } }).orFail();
+    await User.findOneAndUpdate({ _id: tokenId }, { $addToSet: { USER_CONCATS: invite.SENDER } })
+      .orFail()
+      // .session(mongoSession)
+      .exec();
+
+    await User.findOneAndUpdate({ _id: invite.SENDER }, { $addToSet: { USER_CONCATS: tokenId } })
+      .orFail()
+      // .session(mongoSession)
+      .exec();
+
+    // await mongoSession.commitTransaction();
+
     return resJson(res, new ResultObject(ResultCode.SUCCESS));
   } catch (ex) {
+    // console.info(`Aborted`);
+    // await mongoSession.abortTransaction();
     next(ex);
+  } finally {
+    // mongoSession.endSession();
   }
 };
 

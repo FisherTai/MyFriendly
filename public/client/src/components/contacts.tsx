@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
@@ -6,7 +6,6 @@ import styled from "styled-components";
 
 import ContactsItem from "./contacts-item";
 import Logo from "../assets/logo.png";
-import { IUser, Invite } from "../config/interface";
 import { strings } from "../config/strings";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
@@ -15,13 +14,11 @@ import { setContactsTab } from "../redux/reducers/chat-contacts-tab-slice";
 import { Flags } from "../utils/untils";
 
 type Props = {
-  contacts: IUser[];
 };
 
 const TAB_CURRENT = "currentTab";
 
 const Contacts = (props: Props) => {
-  const { contacts } = props;
   const [currentUserName, setCurrentUserName] = useState<string | undefined>(undefined);
   const [currentUserImage, setCurrentUserImage] = useState<string | undefined>(undefined);
   const [currentSelected, setCurrentSelected] = useState<number | undefined>(undefined);
@@ -29,6 +26,7 @@ const Contacts = (props: Props) => {
 
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
   const currentTab = useSelector((state: RootState) => state.chatContactsTab.value);
+  const contacts = useSelector((state: RootState) => state.chatContactsList.value);
 
   useEffect(() => {
     async function fetchData() {

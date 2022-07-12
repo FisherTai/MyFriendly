@@ -172,21 +172,21 @@ export const getUserConcats = async (req: Request, res: Response, next: NextFunc
   }
 }
 
-export const addConcats = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const tokenId: string | null = getTokenId(req,res);
-    if (tokenId) {
-      const receiverId:string = req.body.receiverId;
-      if (receiverId){
-        await User.findOneAndUpdate({ _id:tokenId }, { $push: { USER_CONCATS : [ receiverId ] } }).orFail();
-        return resJson(res, new ResultObject(ResultCode.SUCCESS));
-      }
-    }
-    return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
-  } catch (ex) {
-    next(ex);
-  }
-}
+// export const addConcats = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const tokenId: string | null = getTokenId(req,res);
+//     if (tokenId) {
+//       const receiverId:string = req.body.receiverId;
+//       if (receiverId){
+//         await User.findOneAndUpdate({ _id:tokenId }, { $push: { USER_CONCATS : [ receiverId ] } }).orFail(); 
+//         return resJson(res, new ResultObject(ResultCode.SUCCESS));
+//       }
+//     }
+//     return resJson(res, new ResultObject(ResultCode.PARAM_ERROR));
+//   } catch (ex) {
+//     next(ex);
+//   }
+// }
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {

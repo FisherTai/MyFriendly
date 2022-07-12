@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
 import axios from "axios";
 import styled from "styled-components";
 import { io, Socket } from "socket.io-client";
 
-import { getUserConcats, getAllUsersExIdRoute, getMyReceiveInvite, getMySendInvite, host } from "../utils/api-routes";
+import { getUserConcats, getMyReceiveInvite, host } from "../utils/api-routes";
 import Contacts from "../components/contacts";
 import Welcome from "../components/welcome";
 import ChatContainer from "../components/chat-container";
@@ -14,12 +16,13 @@ import { IUser, ExpendInvite } from "../config/interface";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
 import { getLocalStorageUser, Flags } from "../utils/untils";
+import { setContactsList } from "../redux/reducers/chat-contacts-list-slice";
 
 const Chat = () => {
   const navigate = useNavigate();
   const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
-  const [contacts, setContacts] = useState<IUser[]>([]);
   const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
+  const dispatch = useDispatch();
 
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
   const currentChat = useSelector((state: RootState) => state.currentChat.value);
@@ -53,13 +56,11 @@ const Chat = () => {
                 user.invite_id = invite._id;
                 return user;
               });
-
-              setContacts(mergeContacts);
+              dispatch(setContactsList(mergeContacts))
               break;
             default:
               const { data } = await axios.get(`${getUserConcats}`, { withCredentials: true });
-              // const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
-              setContacts(data.data);
+              dispatch(setContactsList(data.data))
               break;
           }
         } else {
@@ -68,13 +69,13 @@ const Chat = () => {
       }
     }
     fetchData();
-  }, [currentUser, navigate, contactsTab]);
+  }, [currentUser, navigate, contactsTab, dispatch]);
 
   return (
     <>
       <Container style={variableStyle}>
         <div className="container">
-          <Contacts contacts={contacts} />
+          <Contacts />
           {currentChat === undefined || currentChat === null ? <Welcome /> : <ChatContainer socket={socket} />}
         </div>
       </Container>

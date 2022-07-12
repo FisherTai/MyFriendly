@@ -11,7 +11,7 @@ import {
   editUser,
   suspendUser,
   getUserConcats,
-  addConcats
+  // addConcats
 } from "../controllers/user-controllers";
 import { checkUser } from "../middlewares/authMiddleware";
 
@@ -26,7 +26,7 @@ router.get("/logout/:id", logout);
 /** Concats */
 router.use(checkUser);
 router.get("/getUserConcats/", getUserConcats);
-router.post("/addUserConcats/", addConcats);
+// router.post("/addUserConcats/", addConcats);
 
 
 /* for back end */

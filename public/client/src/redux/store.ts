@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { styleConfigReducer, currentUserReducer, currentChatReducer, chatContactsTabReducer } from "./reducers";
+import { styleConfigReducer, currentUserReducer, currentChatReducer, chatContactsTabReducer, chatContactsListReducer } from "./reducers";
 
 export const store = configureStore({
   reducer: {
@@ -7,6 +7,7 @@ export const store = configureStore({
     currentUser: currentUserReducer,
     currentChat: currentChatReducer,
     chatContactsTab: chatContactsTabReducer,
+    chatContactsList:chatContactsListReducer,
   },
 });
 

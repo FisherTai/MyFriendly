@@ -18,7 +18,7 @@ global.customLog = (tag: string, message: string) => console.log(`${new Date()},
 const app = express();
 dotenv.config();
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: [`http://localhost:${process.env.CLIENT_PORT}`],
   methods: ["GET","PATCH","POST","DELETE"],
   credentials: true,
 }));
