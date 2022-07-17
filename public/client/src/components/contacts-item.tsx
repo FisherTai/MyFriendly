@@ -38,7 +38,6 @@ const ContactsItem = (props: Props) => {
     if(data.code === 200){
       dispatch(removeContactsUser(contact))
     }
-    console.log(data);
   };
 
   const onReject = async (inviteId: string) => {
@@ -46,7 +45,6 @@ const ContactsItem = (props: Props) => {
     if(data.code === 200){
       dispatch(removeContactsUser(contact))
     }
-    console.log(data);
   };
 
   return (

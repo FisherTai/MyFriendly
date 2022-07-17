@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -15,18 +15,18 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { IUser, ExpendInvite } from "../config/interface";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
-import { getLocalStorageUser, Flags } from "../utils/untils";
+import { Flags } from "../utils/untils";
 import { setContactsList } from "../redux/reducers/chat-contacts-list-slice";
 
 const Chat = () => {
   const navigate = useNavigate();
   const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
-  const [currentUser, setCurrentUser] = useState<undefined | IUser>(undefined);
   const dispatch = useDispatch();
 
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
   const currentChat = useSelector((state: RootState) => state.currentChat.value);
   const contactsTab = useSelector((state: RootState) => state.chatContactsTab.value);
+  const currentUser = useSelector((state: RootState) => state.currentUser.value);
 
   useEffect(() => {
     if (currentUser) {
@@ -34,13 +34,6 @@ const Chat = () => {
       socket.current.emit("addUser", currentUser._id);
     }
   }, [currentUser]);
-
-  useEffect(() => {
-    async function fetchData() {
-      setCurrentUser(getLocalStorageUser()!);
-    }
-    fetchData();
-  }, []);
 
   useEffect(() => {
     async function fetchData() {

@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     dispatch(setCurrentUser(currentUser))
-  }, []);
+  }, [currentUser, dispatch]);
  
   return (
     <AppStyled style={variableStyle}>

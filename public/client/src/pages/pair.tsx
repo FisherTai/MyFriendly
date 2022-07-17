@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-import { getAllUsersExIdRoute, inviteRoute, getSelfSendedInvities, } from "../utils/api-routes";
+import { getAllUsersExIdRoute, inviteRoute, getSelfSendedInvities, getUserConcats} from "../utils/api-routes";
 import { IUser, Invite} from "../config/interface";
 import { componentProps } from "../config/style-mode-interface";
 import { RootState } from "../redux/store";
@@ -32,12 +32,19 @@ const Pair = () => {
           const { data } = await axios.get(`${getAllUsersExIdRoute}/${currentUser._id}`, { withCredentials: true });
           //將接口返回的清單放入useState
           const sendedInvitedList:Invite[] = await (await axios.get(getSelfSendedInvities, { withCredentials: true })).data.data;
+          let userIdList:string[];
           if(sendedInvitedList && sendedInvitedList.length !== 0){
-            const userIdList:string[] = [];
-            sendedInvitedList.map((invite) => {
-              userIdList.push(invite.RECEIVER)
+            userIdList = sendedInvitedList.map((invite) => {
+              return invite.RECEIVER
             })
-            setInvitedIdList(userIdList);
+          }
+
+          const userConcats:IUser[] = await (await axios.get(`${getUserConcats}`, { withCredentials: true })).data.data;
+          if(userConcats && userConcats.length !== 0){
+            const userConcatIDs:string[] =  userConcats.map((user) => {
+              return user._id
+            })
+            setInvitedIdList(userIdList!.concat(userConcatIDs)); 
           }
 
           setContacts(data.data);
@@ -48,6 +55,7 @@ const Pair = () => {
     }
     fetchData();
   }, [currentUser, navigate]);
+
 
   const sendInvitation = async (index: number, contact: IUser) => {
     if (invitedList.includes(index) || invitedIdList.includes(contact._id)) {

@@ -82,7 +82,7 @@ const Contacts = (props: Props) => {
 const Container = styled.div<componentProps>`
   display: grid;
   margin: 0 0.2rem 0 0;
-  grid-template-rows: 10% 10% 65% 15%;
+  grid-template-rows: 8vh 8vh 60vh 9vh;
   overflow: hidden;
   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
   background-color: ${({ style }) => style.contacts_color};

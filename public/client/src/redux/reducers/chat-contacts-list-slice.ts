@@ -25,9 +25,12 @@ export const contactsListSlice = createSlice({
         return item._id !== action.payload._id;
       });
     },
+    clearContactsList: (state) => {
+      state.value = [];
+    },
   },
 });
 
-export const { setContactsList, addContactsUser, removeContactsUser } = contactsListSlice.actions;
+export const { setContactsList, addContactsUser, removeContactsUser, clearContactsList } = contactsListSlice.actions;
 
 export default contactsListSlice.reducer;

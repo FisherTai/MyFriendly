@@ -131,9 +131,6 @@ const Container = styled.div<componentProps>`
   grid-template-rows: 15% 75% 10%;
   gap: 0.1rem;
   overflow: hidden;
-  @media screen and (min-width: 720px) and (max-width: 1080px) {
-    grid-template-rows: 15% 70% 15%;
-  }
   .chat-header {
     display: flex;
     border-bottom: 0.2rem solid ${({ style }) => style.border_color};

@@ -16,11 +16,13 @@ export const currentChatSlice = createSlice({
   reducers: {
     setCurrentChat: (state, action: PayloadAction<IUser | null>) => {
       state.value = action.payload;
-      console.log("setCurrentChat:" + state.value?._id);
+    },
+    clearCurrentChat: (state) => {
+      state.value = null;
     },
   },
 });
 
-export const { setCurrentChat } = currentChatSlice.actions;
+export const { setCurrentChat, clearCurrentChat } = currentChatSlice.actions;
 
 export default currentChatSlice.reducer;

@@ -44,7 +44,6 @@ const Register = () => {
           },
           { withCredentials: true }
         );
-        console.log(data);
         if (data.code !== 200) {
           toast.error(data.message, toastOptions());
         } else {

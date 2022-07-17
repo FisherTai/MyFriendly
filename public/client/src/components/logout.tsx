@@ -7,9 +7,14 @@ import { BiPowerOff } from "react-icons/bi";
 import { logoutRoute } from "../utils/api-routes";
 import { componentProps } from "../config/style-mode-interface";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../redux/reducers/current-user-slice";
+
+import { RootState } from "../redux/store";
+import { clearCurrentUser } from "../redux/reducers/current-user-slice";
+import { clearContactsTab } from "../redux/reducers/chat-contacts-tab-slice";
+import { clearContactsList } from "../redux/reducers/chat-contacts-list-slice";
+import { clearCurrentChat } from "../redux/reducers/current-chat-slice";
+
 import { getLocalStorageUser } from "../utils/untils";
 
 const Logout = () => {
@@ -22,7 +27,10 @@ const Logout = () => {
     const data = await axios.get(`${logoutRoute}/${_id}`, { withCredentials: true });
     if (data.status === 200) {
       localStorage.clear();
-      dispatch(setCurrentUser(null));
+      dispatch(clearCurrentUser());
+      dispatch(clearContactsTab());
+      dispatch(clearContactsList());
+      dispatch(clearCurrentChat());
       navigate("/login");
     }
   };

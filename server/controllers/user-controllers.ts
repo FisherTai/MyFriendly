@@ -57,7 +57,7 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
-    const findUser = await User.findOne({ USER_EMAIL: email });
+    const findUser = await User.findOne({ USER_EMAIL: email }).lean();
     if (!findUser) {
       return resJson(res, new ResultObject(ResultCode.WRONG_USER_OR_PASSWORD));
     }
@@ -77,15 +77,12 @@ export const login = async (
     const maxAge = 3 * 24 * 60 * 60;
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-    // 無法直接對mongoose的物件進行操作，因次創建一個新物件
-    const resUser = {
-      ...findUser._doc,
-      USER_PW: undefined,
-      USER_POINT: undefined,
-      USER_REPORT: undefined,
-      JWT: token,
-    };
-    return resJson(res, new ResultObject(ResultCode.SUCCESS, resUser));
+    findUser.USER_PW = "";
+    delete findUser.USER_POINTS;
+    delete findUser.USER_REPORT;
+    delete findUser.USER_CONCATS;
+    
+    return resJson(res, new ResultObject(ResultCode.SUCCESS, findUser));
   } catch (err: any) {
     console.log(err.response);
     next(err);

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { BiStore, BiLogIn, BiRegistered } from "react-icons/bi";
+import { BiLogIn, BiRegistered } from "react-icons/bi";
 import { TbFriends } from "react-icons/tb";
 import { BsFillChatSquareDotsFill } from "react-icons/bs";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
@@ -50,20 +50,24 @@ const NavBar = () => {
           </NavLink>
         )}
 
-        <NavLink className={(navData) => setClassName(navData)} to="/store">
+        {/* <NavLink className={(navData) => setClassName(navData)} to="/store">
           <BiStore />
           商店
-        </NavLink>
+        </NavLink> */}
 
-        <NavLink className={(navData) => setClassName(navData)} to="/pair">
-          <TbFriends />
-          配對
-        </NavLink>
+        {currentUser && (
+          <NavLink className={(navData) => setClassName(navData)} to="/pair">
+            <TbFriends />
+            配對
+          </NavLink>
+        )}
 
-        <NavLink className={(navData) => setClassName(navData)} to="/">
-          <BsFillChatSquareDotsFill />
-          聊天
-        </NavLink>
+        {currentUser && (
+          <NavLink className={(navData) => setClassName(navData)} to="/">
+            <BsFillChatSquareDotsFill />
+            聊天
+          </NavLink>
+        )}
 
         {currentUser && <Logout />}
       </div>

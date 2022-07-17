@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import styled from "styled-components";
 import { Buffer } from "buffer";
@@ -10,7 +12,7 @@ import loader from "../assets/loader.gif";
 import { setAvatarRoute } from "../utils/api-routes";
 import toastOptions from "../utils/toast-options";
 import { componentProps } from "../config/style-mode-interface";
-import { useSelector } from "react-redux";
+import { setCurrentUser } from "../redux/reducers/current-user-slice";
 import { RootState } from "../redux/store";
 import { getLocalStorageUser, setLocalStorageUser } from "../utils/untils";
 
@@ -21,7 +23,8 @@ const SetAvatar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState<number | undefined>(undefined);
   const variableStyle = useSelector((state: RootState) => state.styleMode.value);
-
+  const dispatch = useDispatch();
+  
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions());
@@ -38,6 +41,7 @@ const SetAvatar = () => {
       if (data.data.isSet) {
         user.USER_AVATAR = data.data.image;
         setLocalStorageUser(user);
+        dispatch(setCurrentUser(user));
         navigate("/");
       } else {
         toast.error("頭像設定錯誤. 請再試一次.", toastOptions());
@@ -57,7 +61,7 @@ const SetAvatar = () => {
       setIsLoading(false);
     }
     fetchData();
-  }, []);
+  }, [api]);
 
   return (
     <>

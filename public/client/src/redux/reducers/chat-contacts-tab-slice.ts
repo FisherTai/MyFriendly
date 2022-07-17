@@ -17,9 +17,12 @@ export const contactsTabSlice = createSlice({
     setContactsTab: (state, action: PayloadAction<number>) => {
       state.value = action.payload;
     },
+    clearContactsTab: (state) => {
+      state.value = Flags.TAB_CONTACT;
+    },
   },
 });
 
-export const { setContactsTab } = contactsTabSlice.actions;
+export const { setContactsTab, clearContactsTab } = contactsTabSlice.actions;
 
 export default contactsTabSlice.reducer;
